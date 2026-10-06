@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  --color-navy-50: oklch(0.97 0.012 265);
+  --color-navy-100: oklch(0.93 0.022 265);
+  --color-navy-200: oklch(0.86 0.038 265);
+  --color-navy-300: oklch(0.76 0.055 265);
+  --color-navy-400: oklch(0.64 0.075 265);
+  --color-navy-500: oklch(0.53 0.09 265);
+  --color-navy-600: oklch(0.42 0.088 262);
+  --color-navy-700: oklch(0.37 0.088 263);
+  --color-navy-800: oklch(0.3 0.078 264);
+  --color-navy-900: oklch(0.23 0.062 264);
+  --color-navy-950: oklch(0.16 0.048 264);
+
+  --color-brand-50: oklch(0.98 0.02 57);
+  --color-brand-100: oklch(0.95 0.045 57);
+  --color-brand-200: oklch(0.9 0.08 57);
+  --color-brand-300: oklch(0.84 0.11 57);
+  --color-brand-400: oklch(0.76 0.14 57);
+  --color-brand-500: oklch(0.65 0.157 53);
+  --color-brand-600: oklch(0.62 0.15 57);
+  --color-brand-700: oklch(0.52 0.13 57);
+  --color-brand-800: oklch(0.43 0.105 57);
+  --color-brand-900: oklch(0.34 0.08 57);
+
+  --radius-card: 1rem;
+  --radius-card-lg: 1.5rem;
+
+  --shadow-card: 0 1px 2px oklch(0.16 0.048 264 / 0.06),
+    0 8px 24px -8px oklch(0.16 0.048 264 / 0.14);
+  --shadow-card-hover: 0 2px 4px oklch(0.16 0.048 264 / 0.08),
+    0 20px 40px -12px oklch(0.16 0.048 264 / 0.24);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy-900 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-brand-500;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* iOS zooms the viewport when a focused field renders below 16px.
+     Keep the compact size on larger screens, full size on phones. */
+  @media (max-width: 640px) {
+    input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-500
+      px-5 py-2.5 text-sm font-semibold text-navy-950 transition
+      hover:bg-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2
+      focus-visible:outline-brand-500;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border
+      border-navy-200 bg-white px-5 py-2.5 text-sm font-semibold text-navy-800
+      transition hover:border-navy-300 hover:bg-navy-50;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.marquee-track {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.marquee-left {
+  animation-name: marquee-left;
+  animation-duration: 40s;
+}
+
+.marquee-right {
+  animation-name: marquee-right;
+  animation-duration: 35s;
+}
+
+.marquee-paused:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
+}

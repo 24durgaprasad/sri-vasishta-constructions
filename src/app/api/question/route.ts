@@ -1,0 +1,47 @@
+import { NextResponse } from "next/server";
+import { saveSubmission } from "@/lib/submissions";
+import { projects } from "@/data/projects";
+import { slugify } from "@/lib/format";
+
+const clean = (value: unknown, maxLength: number): string =>
+  typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+
+export async function POST(request: Request) {
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid request body." }, { status: 400 });
+  }
+
+  if (clean(body.company, 200)) {
+    return NextResponse.json({ ok: true });
+  }
+
+  const question = clean(body.question, 500);
+  const project = clean(body.project, 60);
+
+  const match = projects.find(
+    (item) => item.id === project || slugify(item.name) === project,
+  );
+
+  const errors: string[] = [];
+  if (question.length < 10) {
+    errors.push("Please ask a slightly longer question (at least 10 characters).");
+  }
+  if (!match) errors.push("Unknown project.");
+
+  if (errors.length > 0) {
+    return NextResponse.json({ ok: false, error: errors.join(" ") }, { status: 400 });
+  }
+
+  const stored = await saveSubmission("questions.jsonl", {
+    projectId: match!.id,
+    projectName: match!.name,
+    locality: match!.locality,
+    question,
+    status: "pending",
+  });
+
+  return NextResponse.json({ ok: true, stored });
+}
