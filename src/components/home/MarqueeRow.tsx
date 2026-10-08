@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Partner } from "@/data/types";
 
 export function MarqueeRow({
@@ -20,7 +21,7 @@ export function MarqueeRow({
       aria-label={label}
     >
       <ul
-        className={`marquee-track flex w-max items-center gap-10 ${
+        className={`marquee-track flex w-max items-center gap-6 ${
           direction === "left" ? "marquee-left" : "marquee-right"
         }`}
       >
@@ -33,14 +34,23 @@ export function MarqueeRow({
             <a
               href={`${hrefBase}#${partner.id}`}
               tabIndex={index >= partners.length ? -1 : undefined}
-              className="flex h-14 w-40 items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-4 text-navy-600 transition hover:border-brand-400 hover:text-navy-900"
+              title={partner.name}
+              aria-label={`${partner.name} logo`}
+              className="flex h-16 w-52 items-center justify-center rounded-xl border border-navy-200 bg-white px-6 transition hover:border-brand-400"
             >
-              <span className="grid size-7 shrink-0 place-items-center rounded-md bg-navy-900 text-xs font-bold tracking-tight text-white sm:text-[0.6rem]">
-                {partner.logo.slice(0, 3)}
-              </span>
-              <span className="text-xs font-semibold uppercase tracking-wide">
-                {partner.name}
-              </span>
+              {partner.logoSrc ? (
+                <Image
+                  src={partner.logoSrc}
+                  alt={`${partner.name} logo`}
+                  width={160}
+                  height={40}
+                  className="h-9 w-auto max-w-[150px] object-contain"
+                />
+              ) : (
+                <span className="text-xs font-semibold uppercase tracking-wide text-navy-600">
+                  {partner.name}
+                </span>
+              )}
             </a>
           </li>
         ))}

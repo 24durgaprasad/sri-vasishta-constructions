@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/layout/Header";
@@ -53,8 +54,8 @@ const pages: Page[] = [
     slug: "interiors",
     eyebrow: "Partners",
     title: "Interior design partners",
-    description: `${interiorPartners.length} studios we work with for turn-key interiors, from modular kitchens to full fit-outs.`,
-    intro: `Handover does not have to mean a second construction cycle. These studios have executed flats in our projects, so they know the typical layouts, service lines and society rules before they quote.`,
+    description: `${interiorPartners.length} interior brands we work with for turn-key interiors, from modular kitchens to full fit-outs.`,
+    intro: `Handover does not have to mean a second construction cycle. These brands supply our projects regularly, so layouts, service lines and society rules are already known before they quote.`,
     benefits: [
       {
         title: "Familiar with our plans",
@@ -71,7 +72,7 @@ const pages: Page[] = [
     ],
     partners: interiorPartners,
     ctaTitle: "Planning interiors for a new flat?",
-    ctaBody: "Share your configuration and budget and we will connect you with two studios.",
+    ctaBody: "Share your configuration and budget and we will connect you with two brands.",
     ctaHref: "/contact",
     ctaLabel: "Get introductions",
   },
@@ -141,7 +142,7 @@ export default async function PartnerPage({
             <h2 className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl">
               {page.slug === "banks"
                 ? "Lending partners"
-                : "Interior studios we work with"}
+                : "Interior brands we work with"}
             </h2>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {page.partners.map((partner) => (
@@ -150,9 +151,21 @@ export default async function PartnerPage({
                   id={partner.id}
                   className="flex scroll-mt-28 items-center gap-4 rounded-card border border-navy-100 bg-white p-5 shadow-card"
                 >
-                  <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-navy-950 text-xs font-bold tracking-wide text-brand-400">
-                    {partner.logo}
-                  </span>
+                  {partner.logoSrc ? (
+                    <span className="grid h-14 w-28 shrink-0 place-items-center rounded-xl border border-navy-100 bg-white p-2">
+                      <Image
+                        src={partner.logoSrc}
+                        alt={`${partner.name} logo`}
+                        width={96}
+                        height={40}
+                        className="h-9 w-auto max-w-[88px] object-contain"
+                      />
+                    </span>
+                  ) : (
+                    <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-navy-950 text-xs font-bold tracking-wide text-brand-400">
+                      {partner.logo}
+                    </span>
+                  )}
                   <span className="text-sm font-semibold text-navy-900">
                     {partner.name}
                   </span>

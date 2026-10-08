@@ -23,6 +23,7 @@ export type Partner = {
   id: string;
   name: string;
   logo: string;
+  logoSrc?: string;
 };
 
 export type NavChild = {

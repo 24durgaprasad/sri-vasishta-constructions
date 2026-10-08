@@ -109,8 +109,8 @@ export default function AboutPage() {
                 answers about possession dates and specifications come from the
                 people actually building it. Buyers who need a loan are
                 introduced to our {banks.length} lending partners, and owners who
-                want interiors are connected to {interiorPartners.length} studios
-                we work with regularly.
+                want interiors are connected to {interiorPartners.length} interior
+                brands we work with regularly.
               </p>
 
               <div className="mt-8 rounded-card-lg bg-navy-950 p-6 sm:p-8">
