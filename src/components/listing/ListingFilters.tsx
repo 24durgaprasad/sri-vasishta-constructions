@@ -39,7 +39,7 @@ export function ListingFilters({ items, extraParams = {}, label }: Props) {
             key={item.label}
             href={href}
             aria-current={item.active ? "true" : undefined}
-            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+            className={`min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition sm:min-h-0 ${
               item.active
                 ? "border-navy-900 bg-navy-900 text-white"
                 : "border-navy-200 bg-white text-navy-700 hover:border-navy-400 hover:text-navy-900"

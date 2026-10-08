@@ -35,7 +35,7 @@ export function MarqueeRow({
               tabIndex={index >= partners.length ? -1 : undefined}
               className="flex h-14 w-40 items-center justify-center gap-2 rounded-xl border border-navy-200 bg-white px-4 text-navy-600 transition hover:border-brand-400 hover:text-navy-900"
             >
-              <span className="grid size-7 shrink-0 place-items-center rounded-md bg-navy-900 text-[0.6rem] font-bold tracking-tight text-white">
+              <span className="grid size-7 shrink-0 place-items-center rounded-md bg-navy-900 text-xs font-bold tracking-tight text-white sm:text-[0.6rem]">
                 {partner.logo.slice(0, 3)}
               </span>
               <span className="text-xs font-semibold uppercase tracking-wide">

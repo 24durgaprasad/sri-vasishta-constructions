@@ -12,14 +12,14 @@ export function BrochureCard({ projectName, brochureUrl, brochurePreview }: Prop
   const previews = brochurePreview ?? [];
 
   return (
-    <div className="rounded-card-lg border border-navy-100 bg-white p-6 shadow-card sm:p-8">
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+    <div className="rounded-card-lg border border-navy-100 bg-white p-5 shadow-card sm:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         {previews.length > 0 ? (
-          <div className="flex shrink-0 gap-3 overflow-hidden">
+          <div className="no-scrollbar -mx-1 flex shrink-0 gap-2.5 overflow-x-auto px-1 py-1">
             {previews.slice(0, 3).map((src, index) => (
               <div
                 key={src}
-                className="relative h-36 w-24 shrink-0 overflow-hidden rounded-lg border border-navy-100 sm:h-44 sm:w-32"
+                className="relative h-32 w-20 shrink-0 overflow-hidden rounded-lg border border-navy-100 sm:h-44 sm:w-32"
               >
                 <Image
                   src={src}
@@ -44,7 +44,7 @@ export function BrochureCard({ projectName, brochureUrl, brochurePreview }: Prop
           <a
             href={brochureUrl}
             download
-            className="btn-primary mt-5"
+            className="btn-primary mt-4 min-h-11"
           >
             <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4">
               <path

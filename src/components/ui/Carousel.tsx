@@ -50,7 +50,7 @@ export function Carousel({
     <div className={className}>
       <div className="relative">
         <div ref={emblaRef} className="overflow-hidden">
-          <div className="flex touch-pan-y gap-5">{children}</div>
+          <div className="flex touch-pan-y gap-3 sm:gap-5">{children}</div>
         </div>
 
         <div className="pointer-events-none absolute inset-y-0 -left-3 hidden w-12 bg-gradient-to-r from-white to-transparent lg:block" />

@@ -4,12 +4,12 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProjectGrid } from "@/components/listing/ProjectGrid";
-import { ListingFilters } from "@/components/listing/ListingFilters";
+import { FilterSelect } from "@/components/listing/FilterSelect";
 import { isCommercial, projects, propertyCategories } from "@/lib/catalog";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `Buy flats, villas and plots in ${site.address.split(",")[0]} | ${site.name}`,
+  title: `Buy flats, villas and plots in ${site.city} | ${site.name}`,
   description:
     "Buy RERA-approved flats, villas, plots and houses from Sri Vasishta Constructions with transparent pricing and clean handover.",
 };
@@ -66,8 +66,8 @@ export default function BuyPage() {
             </p>
           </div>
 
-          <div className="mt-6">
-            <ListingFilters
+          <div className="mt-6 max-w-md">
+            <FilterSelect
               label="Property type"
               items={[
                 { label: "All homes", href: "/buy", active: true },

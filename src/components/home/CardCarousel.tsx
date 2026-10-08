@@ -72,7 +72,7 @@ export function CardCarousel({ images, alt, sizes }: Props) {
         type="button"
         aria-label={`Previous photo for ${alt}`}
         onClick={() => emblaApi?.scrollPrev()}
-        className="absolute left-2 top-1/2 z-20 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-navy-950/60 text-white backdrop-blur-sm transition hover:bg-navy-950/85"
+        className="absolute left-2 top-1/2 z-20 hidden size-8 -translate-y-1/2 place-items-center rounded-full bg-navy-950/60 text-white backdrop-blur-sm transition hover:bg-navy-950/85 sm:grid"
       >
         <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4">
           <path d="m12 5-5 5 5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
@@ -82,7 +82,7 @@ export function CardCarousel({ images, alt, sizes }: Props) {
         type="button"
         aria-label={`Next photo for ${alt}`}
         onClick={() => emblaApi?.scrollNext()}
-        className="absolute right-2 top-1/2 z-20 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-navy-950/60 text-white backdrop-blur-sm transition hover:bg-navy-950/85"
+        className="absolute right-2 top-1/2 z-20 hidden size-8 -translate-y-1/2 place-items-center rounded-full bg-navy-950/60 text-white backdrop-blur-sm transition hover:bg-navy-950/85 sm:grid"
       >
         <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4">
           <path d="m8 5 5 5-5 5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
@@ -91,7 +91,7 @@ export function CardCarousel({ images, alt, sizes }: Props) {
 
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-2 right-2 rounded-full bg-navy-950/70 px-2 py-0.5 text-[0.65rem] font-semibold text-white"
+        className="pointer-events-none absolute bottom-2 right-2 rounded-full bg-navy-950/70 px-2 py-0.5 text-xs font-semibold text-white sm:text-[0.65rem]"
       >
         {selected + 1} / {images.length}
       </span>

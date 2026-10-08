@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Project } from "@/data/types";
 import { priceRangeLabel, projectHref } from "@/lib/format";
 import { CardCarousel } from "./CardCarousel";
+import { FinanceBadges } from "./FinanceBadges";
 
 export function HighlightCard({ project }: { project: Project }) {
   return (
@@ -17,10 +18,10 @@ export function HighlightCard({ project }: { project: Project }) {
       <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/25 to-transparent" />
 
       {project.badge ? (
-        <span className="absolute left-4 top-4 rounded-full bg-brand-500 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-navy-950">
-          {project.badge}
+        <span className="absolute left-4 top-4 z-10 rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-white backdrop-blur-sm sm:text-[0.65rem]">          {project.badge}
         </span>
       ) : null}
+      <FinanceBadges />
 
       <Link
         href={projectHref(project.name)}

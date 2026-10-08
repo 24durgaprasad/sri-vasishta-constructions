@@ -29,7 +29,7 @@ export function Logo({
           Sri Vasishta
         </span>
         <span
-          className={`mt-1 text-[0.6rem] font-semibold uppercase tracking-[0.18em] ${
+          className={`mt-1 text-xs font-semibold uppercase tracking-[0.18em] sm:text-[0.6rem] ${
             onHero ? "text-brand-300" : "text-brand-700"
           }`}
         >

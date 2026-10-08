@@ -1,4 +1,5 @@
 import { projects } from "@/data/projects";
+import { getProjectDetail } from "@/data/projectDetails";
 import type { Project, SearchIntent } from "@/data/types";
 
 export { projects };
@@ -59,6 +60,32 @@ const tokens = (value: string): string[] =>
     .split(/[^a-z0-9]+/)
     .filter(Boolean);
 
+/** Filler words that must never filter results out of a free-text query. */
+const STOPWORDS = new Set([
+  "in",
+  "at",
+  "for",
+  "near",
+  "with",
+  "and",
+  "or",
+  "the",
+  "a",
+  "an",
+  "of",
+  "to",
+  "on",
+  "by",
+  "from",
+  "any",
+  "all",
+  "my",
+  "our",
+]);
+
+const significant = (words: string[]): string[] =>
+  words.filter((word) => !STOPWORDS.has(word));
+
 export const categoryOf = (project: Project): PropertyCategory => {
   const text = `${project.name} ${project.badge ?? ""} ${project.bhks.join(
     " ",
@@ -99,6 +126,63 @@ const matchesBhkChip = (project: Project, chip: string): boolean => {
   return match[2] ? counts.some((count) => count >= wanted) : counts.includes(wanted);
 };
 
+const READY_POSSESSION = new Set(["ready to move", "completed", "ready"]);
+
+export const isReadyToMove = (project: Project): boolean => {
+  if (/ready/.test((project.badge ?? "").toLowerCase())) return true;
+  try {
+    const possession = getProjectDetail(project.id).possessionDate?.toLowerCase().trim() ?? "";
+    return READY_POSSESSION.has(possession);
+  } catch {
+    return false;
+  }
+};
+
+const projectText = (project: Project): string =>
+  [
+    project.name,
+    project.locality,
+    project.city,
+    project.badge ?? "",
+    project.bhks.join(" "),
+    categoryOf(project),
+  ].join(" ").toLowerCase();
+
+/**
+ * Every home-search chip must resolve against real data — never silently
+ * match nothing. Chips with no backing field are no-ops, not zero-result traps.
+ */
+const matchesChip = (project: Project, chip: string): boolean => {
+  const label = chip.trim().toLowerCase();
+  if (!label) return true;
+  if (/^\d+\s*bhk\+?$/.test(label)) return matchesBhkChip(project, chip);
+  if (label === "ready to move") return isReadyToMove(project);
+  if (label === "under construction") return !isReadyToMove(project);
+  if (label === "office space") return project.bhks.some((bhk) => /office/i.test(bhk));
+  if (label === "showroom") return project.bhks.some((bhk) => /showroom/i.test(bhk));
+  if (label === "retail shop") return project.bhks.some((bhk) => /retail|shop/i.test(bhk));
+  if (label === "residential plot" || label === "corner plot") {
+    return categoryOf(project) === "plots";
+  }
+  if (label === "commercial plot") return categoryOf(project) === "plots";
+  if (label === "east facing") return /east|facing/.test(projectText(project));
+  if (label === "approved layout") return /approv|r approved/.test(projectText(project)) || categoryOf(project) === "plots";
+  if (label === "furnished" || label === "semi furnished" || label === "shared") return true;
+
+  const words = significant(tokens(chip));
+  if (words.length === 0) return true;
+  const haystack = tokens(projectText(project));
+  return words.every((word) => haystack.some((token) => token.includes(word)));
+};
+
+/** Free-text match shared by home search and the projects-page search bar. */
+export const matchesQuery = (project: Project, query: string): boolean => {
+  const words = significant(tokens(query));
+  if (words.length === 0) return true;
+  const haystack = tokens(projectText(project));
+  return words.every((word) => haystack.some((token) => token.includes(word)));
+};
+
 const scopeForIntent = (intent: SearchIntent): Project[] => {
   if (intent === "rent") return [];
   if (intent === "commercial") return projectsInCategory("commercial");
@@ -117,8 +201,7 @@ export const searchProjects = ({
   intent = "buy",
   chips = [],
 }: SearchCriteria): Project[] => {
-  const queryWords = tokens(query ?? "");
-  const chipWords = chips.map((chip) => ({ chip, words: tokens(chip) }));
+  const queryWords = significant(tokens(query ?? ""));
 
   const matchesWords = (words: string[], haystack: string[]): boolean =>
     words.every((word) => haystack.some((token) => token.includes(word)));
@@ -140,12 +223,7 @@ export const searchProjects = ({
 
     if (!matchesWords(queryWords, text)) return false;
 
-    return chipWords.every(({ chip, words }) => {
-      if (/^\d+\s*bhk\+?$/i.test(chip.trim()) && matchesBhkChip(project, chip)) {
-        return true;
-      }
-      return matchesWords(words, text);
-    });
+    return chips.every((chip) => matchesChip(project, chip));
   });
 };
 

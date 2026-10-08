@@ -81,23 +81,31 @@ export function Footer() {
                 Get in touch
               </h3>
               <ul className="mt-4 space-y-3 text-sm text-navy-300">
-                <li>
-                  <a
-                    href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                    className="transition hover:text-white"
-                  >
-                    {site.phone}
-                  </a>
-                </li>
+                {site.phones.map((phone) => (
+                  <li key={phone}>
+                    <a
+                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                      className="transition hover:text-white"
+                    >
+                      {phone}
+                    </a>
+                  </li>
+                ))}
                 <li>
                   <a
                     href={`mailto:${site.email}`}
-                    className="transition hover:text-white"
+                    className="break-all transition hover:text-white"
                   >
                     {site.email}
                   </a>
                 </li>
-                <li className="leading-relaxed">{site.address}</li>
+                <li className="leading-relaxed">
+                  {site.officeAddress.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </li>
                 <li>
                   <a
                     href={site.whatsapp}

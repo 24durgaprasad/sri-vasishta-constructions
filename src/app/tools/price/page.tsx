@@ -60,7 +60,7 @@ export default function PriceToolPage() {
           <PriceCalculator localities={rates} />
           <p className="mt-6 text-xs leading-relaxed text-navy-500">
             Rates cover the {rates.length} localities where {site.name} has
-            projects in {site.address.split(",")[0]}.
+            projects in {site.city}.
           </p>
         </ToolShell>
       </main>

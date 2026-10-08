@@ -23,23 +23,23 @@ export function KeyFacts({ project, detail }: Props) {
   ];
 
   return (
-    <div className="rounded-card-lg border border-navy-100 bg-white p-6 shadow-card sm:p-8">
-      <h2 className="text-xl font-bold text-navy-900">
+    <div className="rounded-card-lg border border-navy-100 bg-white p-5 shadow-card sm:p-6">
+      <h2 className="text-lg font-bold text-navy-900 sm:text-xl">
         Why {project.name}?
       </h2>
-      <ul className="mt-5 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+      <ul className="mt-4 grid grid-cols-2 gap-3 sm:gap-x-8 sm:gap-y-4">
         {facts.map((fact) => (
-          <li key={fact.label} className="flex flex-wrap items-baseline gap-x-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-navy-500">
+          <li key={fact.label} className="min-w-0">
+            <span className="block text-[11px] font-semibold uppercase tracking-wider text-navy-500 sm:text-xs">
               {fact.label}
             </span>
-            <span className="text-sm font-semibold text-navy-900">
+            <span className="mt-0.5 block truncate text-[13px] font-semibold text-navy-900 sm:whitespace-normal sm:text-sm" title={fact.value}>
               {fact.value}
             </span>
           </li>
         ))}
       </ul>
-      <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-navy-100 pt-5">
+      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-navy-100 pt-4 sm:gap-3">
         <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3.5 py-1.5 text-sm font-semibold text-green-800">
           <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4">
             <path d="m5 10.5 3.5 3.5L15 7" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />

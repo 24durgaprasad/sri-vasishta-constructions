@@ -95,7 +95,18 @@ export default function CareersPage() {
                   >
                     {site.email}
                   </a>{" "}
-                  or call {site.phone}.
+                  or call{" "}
+                  {site.phones.map((phone, index) => (
+                    <span key={phone}>
+                      {index > 0 ? " or " : " "}
+                      <a
+                        href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                        className="font-semibold text-brand-400 hover:underline"
+                      >
+                        {phone}
+                      </a>
+                    </span>
+                  ))}.
                 </p>
               </div>
             </div>

@@ -5,13 +5,13 @@ import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProjectGrid } from "@/components/listing/ProjectGrid";
 import { EmptyInventory } from "@/components/listing/EmptyInventory";
-import { ListingFilters } from "@/components/listing/ListingFilters";
+import { FilterSelect } from "@/components/listing/FilterSelect";
 import { projects, projectsInCategory, propertyCategories } from "@/lib/catalog";
 import { localities } from "@/data/localities";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `Properties in ${site.address.split(",")[0]} | ${site.name}`,
+  title: `Properties in ${site.city} | ${site.name}`,
   description:
     "Browse flats, houses, villas, plots and commercial properties by type and locality from Sri Vasishta Constructions.",
 };
@@ -46,8 +46,9 @@ export default async function PropertiesPage({ searchParams }: SearchParams) {
               : "Start with the kind of home or investment you want, then narrow it down by locality."
           }
         >
-          <div className="flex flex-col gap-5">
-            <ListingFilters
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            <FilterSelect
+              variant="onDark"
               label="Filter by property type"
               items={[
                 { label: "All", href: "/properties", active: false },
@@ -59,7 +60,8 @@ export default async function PropertiesPage({ searchParams }: SearchParams) {
               ]}
               extraParams={{}}
             />
-            <ListingFilters
+            <FilterSelect
+              variant="onDark"
               label="Filter by locality"
               items={[
                 {

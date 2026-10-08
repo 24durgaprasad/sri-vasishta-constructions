@@ -59,7 +59,7 @@ export function QaSection({ project, items }: Props) {
             {answered.map((item) => (
               <li key={item.question} className="px-5 py-5">
                 <p className="text-sm font-bold text-navy-900">
-                  <span className="mr-2 inline-block rounded bg-navy-100 px-1.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wide text-navy-700">
+                  <span className="mr-2 inline-block rounded bg-navy-100 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide text-navy-700 sm:text-[0.65rem]">
                     For project
                   </span>
                   Q: {item.question}

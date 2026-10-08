@@ -14,9 +14,9 @@ const intents: { id: SearchIntent; label: string }[] = [
 
 const chips: Record<SearchIntent, string[]> = {
   buy: ["1 BHK", "2 BHK", "3 BHK", "4 BHK+", "Ready to move", "Under construction"],
-  rent: ["1 BHK", "2 BHK", "3 BHK", "Furnished", "Semi furnished", "Shared"],
-  commercial: ["Office space", "Retail shop", "Showroom", "Warehouse", "Co-working"],
-  plots: ["Residential plot", "Commercial plot", "Corner plot", "East facing", "Approved layout"],
+  rent: ["1 BHK", "2 BHK", "3 BHK", "Ready to move"],
+  commercial: ["Office space", "Retail shop", "Showroom", "Ready to move"],
+  plots: ["Residential plot", "Corner plot", "Approved layout", "Under construction"],
 };
 
 const placeholder: Record<SearchIntent, string> = {
@@ -99,7 +99,7 @@ export function Hero() {
           <div
             role="tablist"
             aria-label="What are you looking for"
-            className="flex flex-wrap gap-1 rounded-full bg-navy-50 p-1"
+            className="no-scrollbar flex snap-x snap-mandatory flex-nowrap gap-1 overflow-x-auto rounded-2xl bg-navy-50 p-1 sm:grid sm:grid-cols-4 sm:overflow-visible sm:rounded-full"
           >
             {intents.map((item) => (
               <button
@@ -107,12 +107,17 @@ export function Hero() {
                 type="button"
                 role="tab"
                 aria-selected={intent === item.id}
-                onClick={() => {
+                onClick={(event) => {
                   setIntent(item.id);
                   setActiveChips([]);
                   setSubmitted(null);
+                  event.currentTarget.scrollIntoView({
+                    inline: "center",
+                    block: "nearest",
+                    behavior: "smooth",
+                  });
                 }}
-                className={`flex-1 whitespace-nowrap rounded-full px-5 py-2.5 text-sm font-semibold transition ${
+                className={`min-h-11 flex-none snap-start whitespace-nowrap rounded-xl px-4 py-2.5 text-[13px] font-semibold transition sm:w-full sm:min-w-0 sm:rounded-full sm:px-5 sm:text-sm ${
                   intent === item.id
                     ? "bg-navy-900 text-white shadow-sm"
                     : "text-navy-600 hover:text-navy-900"
@@ -161,7 +166,7 @@ export function Hero() {
                       type="button"
                       aria-pressed={isActive}
                       onClick={() => toggleChip(chip)}
-                      className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+                      className={`min-h-11 rounded-full border px-3.5 py-2.5 text-sm font-medium transition sm:min-h-0 sm:py-1.5 sm:text-xs ${
                         isActive
                           ? "border-navy-900 bg-navy-900 text-white"
                           : "border-navy-200 bg-white text-navy-600 hover:border-navy-400"

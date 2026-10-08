@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { photoLabel } from "@/lib/gallery";
 
 type Props = {
   images: string[];
@@ -90,11 +91,14 @@ export function GalleryLightbox({ images, alt, initialIndex = 0, onClose }: Prop
           <Image
             key={current}
             src={current}
-            alt={index === 0 ? alt : `${alt} — photo ${index + 1}`}
+            alt={`${alt} — ${photoLabel(current, index)}`}
             fill
             sizes="90vw"
             className="object-contain"
           />
+          <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-navy-900 backdrop-blur-sm">
+            {photoLabel(current, index)}
+          </span>
         </div>
 
         <button

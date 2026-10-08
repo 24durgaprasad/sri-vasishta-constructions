@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { photoLabel } from "@/lib/gallery";
 
 type Props = {
   projectName: string;
@@ -22,11 +23,14 @@ export function PhotoGallery({ projectName, locality, images }: Props) {
         <Image
           key={active}
           src={active}
-          alt={`${projectName}, ${locality} — photo ${activeIndex + 1} of ${images.length}`}
+          alt={`${projectName}, ${locality} — ${photoLabel(active, activeIndex)}`}
           fill
           sizes="(max-width: 1024px) 100vw, 70vw"
           className="object-cover"
         />
+        <span className="absolute right-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-navy-900 backdrop-blur-sm">
+          {photoLabel(active, activeIndex)}
+        </span>
         <span className="absolute bottom-3 right-3 rounded-full bg-navy-950/80 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
           {activeIndex + 1} / {images.length}
         </span>
@@ -43,8 +47,9 @@ export function PhotoGallery({ projectName, locality, images }: Props) {
             type="button"
             role="tab"
             aria-selected={index === activeIndex}
-            aria-label={`Show photo ${index + 1}`}
+            aria-label={`Show ${photoLabel(src, index)}`}
             onClick={() => setActiveIndex(index)}
+            title={photoLabel(src, index)}
             className={`relative h-20 w-32 shrink-0 overflow-hidden rounded-xl transition ${
               index === activeIndex
                 ? "ring-2 ring-brand-500 ring-offset-2 ring-offset-white"
@@ -58,6 +63,12 @@ export function PhotoGallery({ projectName, locality, images }: Props) {
               sizes="128px"
               className="object-cover"
             />
+            <span
+              aria-hidden="true"
+              className="absolute right-1 top-1 max-w-[90%] truncate rounded-full bg-navy-950/75 px-1.5 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-white"
+            >
+              {photoLabel(src, index)}
+            </span>
           </button>
         ))}
       </div>

@@ -1,11 +1,18 @@
 export const site = {
   name: "Sri Vasishta Constructions",
   tagline: "Build Your Dreams",
-  phone: "+91 90000 12345",
-  phoneHref: "tel:+919000012345",
-  whatsapp: "https://wa.me/919000012345",
-  email: "sales@vasishtaconstructions.in",
+  phone: "+91 88869 66669",
+  phones: ["+91 88869 66669", "+91 99851 63163"],
+  phoneHref: "tel:+918886966669",
+  whatsapp: "https://wa.me/918886966669",
+  email: "thevasishtaconstructions@gmail.com",
   address: "Visakhapatnam, Andhra Pradesh",
+  city: "Visakhapatnam",
+  officeAddress: [
+    "5-139/9/4, 3 rd floor, Swarnamanjari Villa,",
+    "Teachers Layout, Road No :1, SUJATHANAGAR,",
+    "Pendurthi, Visakhapatnam-530051",
+  ],
   rera: "AP00005123",
 } as const;
 

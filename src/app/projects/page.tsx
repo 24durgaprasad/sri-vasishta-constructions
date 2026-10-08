@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProjectGrid } from "@/components/listing/ProjectGrid";
 import { EmptyInventory } from "@/components/listing/EmptyInventory";
-import { ListingFilters } from "@/components/listing/ListingFilters";
+import { FilterSelect } from "@/components/listing/FilterSelect";
+import { ProjectSearchBar } from "@/components/listing/ProjectSearchBar";
 import {
+  matchesQuery,
   projects,
   projectsInCategory,
   propertyCategories,
@@ -35,6 +38,7 @@ export default async function ProjectsPage({ searchParams }: SearchParams) {
   const locality = first(params.locality);
   const category = first(params.category);
   const collection = first(params.collection);
+  const query = (first(params.q) ?? "").trim();
 
   const categoryFilter = propertyCategories.find((item) => item.id === category);
   const collectionFilter = collections.find((item) => item.param === collection);
@@ -43,17 +47,19 @@ export default async function ProjectsPage({ searchParams }: SearchParams) {
     if (locality && project.locality !== locality) return false;
     if (collectionFilter && project.collection !== collectionFilter.id) return false;
     if (categoryFilter) {
-      return projectsInCategory(categoryFilter.id).some(
+      const inCategory = projectsInCategory(categoryFilter.id).some(
         (item) => item.id === project.id,
       );
+      if (!inCategory) return false;
     }
+    if (query && !matchesQuery(project, query)) return false;
     return true;
   });
 
   const heading = collectionFilter
     ? `${collectionFilter.label} projects${locality ? ` in ${locality}` : ""}`
     : categoryFilter
-      ? `${categoryFilter.label} in ${locality ?? site.address.split(",")[0]}`
+      ? `${categoryFilter.label} in ${locality ?? site.city}`
       : locality
         ? `Projects in ${locality}`
         : "All projects";
@@ -74,90 +80,80 @@ export default async function ProjectsPage({ searchParams }: SearchParams) {
         />
 
         <section className="shell py-10 lg:py-14">
-          <div className="flex flex-col gap-6">
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-navy-500">
-                Shortlist
-              </p>
-              <ListingFilters
-                label="Filter by shortlist"
-                items={[
-                  {
-                    label: "Everything",
-                    href: "/projects",
-                    active: !collectionFilter,
-                    params: { collection: undefined },
-                  },
-                  ...collections.map((item) => ({
-                    label: item.label,
-                    href: "/projects",
-                    active: collectionFilter?.param === item.param,
-                    params: { collection: item.param },
-                  })),
-                ]}
-                extraParams={{ locality, category: categoryFilter?.id }}
-              />
-            </div>
+          <Suspense>
+            <ProjectSearchBar initialQuery={query} />
+          </Suspense>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3 sm:gap-4">
+            <FilterSelect
+              label="Shortlist"
+              items={[
+                {
+                  label: "Everything",
+                  href: "/projects",
+                  active: !collectionFilter,
+                  params: { collection: undefined },
+                },
+                ...collections.map((item) => ({
+                  label: item.label,
+                  href: "/projects",
+                  active: collectionFilter?.param === item.param,
+                  params: { collection: item.param },
+                })),
+              ]}
+              extraParams={{ locality, category: categoryFilter?.id, q: query || undefined }}
+            />
 
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-navy-500">
-                Property type
-              </p>
-              <ListingFilters
-                label="Filter by property type"
-                items={[
-                  {
-                    label: "All projects",
-                    href: "/projects",
-                    active: !categoryFilter,
-                    params: { category: undefined },
-                  },
-                  ...propertyCategories.map((item) => ({
-                    label: item.label,
-                    href: "/projects",
-                    active: categoryFilter?.id === item.id,
-                    params: { category: item.id },
-                  })),
-                ]}
-                extraParams={{ locality, collection: collectionFilter?.param }}
-              />
-            </div>
+            <FilterSelect
+              label="Property type"
+              items={[
+                {
+                  label: "All projects",
+                  href: "/projects",
+                  active: !categoryFilter,
+                  params: { category: undefined },
+                },
+                ...propertyCategories.map((item) => ({
+                  label: item.label,
+                  href: "/projects",
+                  active: categoryFilter?.id === item.id,
+                  params: { category: item.id },
+                })),
+              ]}
+              extraParams={{ locality, collection: collectionFilter?.param, q: query || undefined }}
+            />
 
-            <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-navy-500">
-                Locality
-              </p>
-              <ListingFilters
-                label="Filter by locality"
-                items={[
-                  {
-                    label: "All localities",
+            <FilterSelect
+              label="Locality"
+              items={[
+                {
+                  label: "All localities",
+                  href: "/projects",
+                  active: !locality,
+                  params: { locality: undefined },
+                },
+                ...Array.from(
+                  new Set(projects.map((project) => project.locality)),
+                )
+                  .sort()
+                  .map((name) => ({
+                    label: name,
                     href: "/projects",
-                    active: !locality,
-                    params: { locality: undefined },
-                  },
-                  ...Array.from(
-                    new Set(projects.map((project) => project.locality)),
-                  )
-                    .sort()
-                    .map((name) => ({
-                      label: name,
-                      href: "/projects",
-                      active: locality === name,
-                      params: { locality: name },
-                    })),
-                ]}
-                extraParams={{
-                  category: categoryFilter?.id,
-                  collection: collectionFilter?.param,
-                }}
-              />
-            </div>
+                    active: locality === name,
+                    params: { locality: name },
+                  })),
+              ]}
+              extraParams={{
+                category: categoryFilter?.id,
+                collection: collectionFilter?.param,
+                q: query || undefined,
+              }}
+            />
           </div>
 
           <div className="mt-8">
             <p className="mb-4 text-sm text-navy-500" aria-live="polite">
               {results.length} {results.length === 1 ? "project" : "projects"} found
+              {query ? ` for “${query}”` : ""}
             </p>
 
             {results.length > 0 ? (
@@ -165,6 +161,7 @@ export default async function ProjectsPage({ searchParams }: SearchParams) {
             ) : (
               <EmptyInventory
                 title={`No projects match ${[
+                  query ? `“${query}”` : "",
                   collectionFilter?.label,
                   categoryFilter?.label,
                   locality,

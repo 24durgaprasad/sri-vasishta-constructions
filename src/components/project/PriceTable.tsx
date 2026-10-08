@@ -13,13 +13,13 @@ export function PriceTable({ configurations }: { configurations: Configuration[]
           </caption>
           <thead>
             <tr className="bg-navy-900 text-white">
-              <th scope="col" className="px-5 py-3.5 text-sm font-semibold">
+              <th scope="col" className="px-4 py-3 text-sm font-semibold">
                 Configuration
               </th>
-              <th scope="col" className="px-5 py-3.5 text-sm font-semibold">
+              <th scope="col" className="px-4 py-3 text-sm font-semibold">
                 Carpet area
               </th>
-              <th scope="col" className="px-5 py-3.5 text-sm font-semibold">
+              <th scope="col" className="px-4 py-3 text-sm font-semibold">
                 Price range
               </th>
             </tr>
@@ -29,14 +29,14 @@ export function PriceTable({ configurations }: { configurations: Configuration[]
               <tr key={config.label} className="bg-white even:bg-navy-50/50">
                 <th
                   scope="row"
-                  className="px-5 py-4 text-sm font-semibold text-navy-900"
+                  className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-navy-900"
                 >
                   {config.label}
                 </th>
-                <td className="px-5 py-4 text-sm text-navy-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm text-navy-700">
                   {formatArea(config.areaSqft)}
                 </td>
-                <td className="px-5 py-4 text-sm font-bold text-brand-700">
+                <td className="whitespace-nowrap px-4 py-3 text-sm font-bold text-brand-700">
                   {priceRangeLabel(config.priceMin, config.priceMax)}
                 </td>
               </tr>
@@ -44,7 +44,7 @@ export function PriceTable({ configurations }: { configurations: Configuration[]
           </tbody>
         </table>
       </div>
-      <p className="border-t border-navy-100 bg-navy-50 px-5 py-3 text-xs text-navy-500">
+      <p className="border-t border-navy-100 bg-navy-50 px-4 py-2.5 text-xs text-navy-500">
         Prices are indicative and exclude maintenance, floor rise, stamp duty,
         registration and GST. Final pricing is confirmed at booking.
       </p>

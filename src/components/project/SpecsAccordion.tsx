@@ -7,7 +7,7 @@ export function SpecsAccordion({ groups }: { groups: SpecGroup[] }) {
     <div className="divide-y divide-navy-100 overflow-hidden rounded-card-lg border border-navy-100 bg-white">
       {groups.map((group, index) => (
         <details key={group.category} open={index === 0} className="group">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-bold text-navy-900 marker:hidden hover:bg-navy-50/60">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-sm font-bold text-navy-900 marker:hidden hover:bg-navy-50/60">
             <span>{group.category}</span>
             <svg
               aria-hidden="true"
@@ -24,7 +24,7 @@ export function SpecsAccordion({ groups }: { groups: SpecGroup[] }) {
               />
             </svg>
           </summary>
-          <dl className="grid gap-x-8 gap-y-3 px-5 pb-5 sm:grid-cols-2 lg:grid-cols-3">
+          <dl className="grid gap-x-8 gap-y-3 px-4 pb-4 sm:grid-cols-2 lg:grid-cols-3">
             {group.rows.map((row) => (
               <div key={row.label}>
                 <dt className="text-xs text-navy-500">{row.label}</dt>

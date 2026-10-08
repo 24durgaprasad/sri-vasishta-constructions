@@ -36,7 +36,7 @@ export function ToolShell({ slug, title, description, children, notes }: Props) 
               aria-current={
                 tool.href === `/tools/${slug}` ? "page" : undefined
               }
-              className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+              className={`min-h-11 rounded-full border px-4 py-2 text-sm font-medium transition sm:min-h-0 ${
                 tool.href === `/tools/${slug}`
                   ? "border-navy-900 bg-navy-900 text-white"
                   : "border-white/25 bg-white/10 text-white backdrop-blur-sm hover:border-white/50"

@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/contact/ContactForm";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `Rent a home in ${site.address.split(",")[0]} | ${site.name}`,
+  title: `Rent a home in ${site.city} | ${site.name}`,
   description:
     "Tell us your rental requirement and our team will share verified rental homes, floors and commercial spaces across Visakhapatnam.",
 };
@@ -69,16 +69,31 @@ export default function RentPage() {
                   Prefer to talk first?
                 </p>
                 <p className="mt-1.5 text-sm leading-relaxed text-navy-300">
-                  Call {site.phone} between 9:30 am and 7:00 pm, or chat on
-                  WhatsApp, and we will note your requirement.
+                  Call{" "}
+                  {site.phones.map((phone, index) => (
+                    <span key={phone}>
+                      {index > 0 ? " or " : ""}
+                      <a
+                        href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                        className="font-semibold text-white hover:underline"
+                      >
+                        {phone}
+                      </a>
+                    </span>
+                  ))}{" "}
+                  between 9:30 am and 7:00 pm, or chat on WhatsApp, and we
+                  will note your requirement.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <a
-                    href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                    className="btn-primary"
-                  >
-                    Call now
-                  </a>
+                  {site.phones.map((phone) => (
+                    <a
+                      key={phone}
+                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                      className="btn-primary"
+                    >
+                      Call {phone}
+                    </a>
+                  ))}
                   <a
                     href={site.whatsapp}
                     target="_blank"

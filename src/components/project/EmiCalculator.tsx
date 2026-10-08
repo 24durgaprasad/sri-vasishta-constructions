@@ -27,8 +27,8 @@ export function EmiCalculator({ project }: { project?: Project }) {
   const { emi, totalPayable, totalInterest } = emiFor(principal, rate, tenure);
 
   return (
-    <div className="grid gap-8 rounded-card-lg border border-navy-100 bg-white p-6 shadow-card sm:p-8 lg:grid-cols-[1fr_1fr]">
-      <div className="space-y-6">
+    <div className="grid gap-5 rounded-card-lg border border-navy-100 bg-white p-5 shadow-card sm:p-6 lg:grid-cols-[1fr_1fr]">
+      <div className="space-y-4">
         <div>
           <div className="flex items-baseline justify-between gap-3">
             <label htmlFor="emi-principal" className="text-sm font-semibold text-navy-800">
@@ -93,14 +93,14 @@ export function EmiCalculator({ project }: { project?: Project }) {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center rounded-card bg-navy-900 p-6 text-white sm:p-8">
+      <div className="flex flex-col justify-center rounded-card bg-navy-900 p-5 text-white sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-navy-400">
           Monthly EMI
         </p>
-        <p aria-live="polite" className="mt-1 text-3xl font-bold text-brand-400">
+        <p aria-live="polite" className="mt-1 text-2xl font-bold text-brand-400 sm:text-3xl">
           {inr(emi)}
         </p>
-        <dl className="mt-5 space-y-3 border-t border-navy-700 pt-5 text-sm">
+        <dl className="mt-4 space-y-2.5 border-t border-navy-700 pt-4 text-sm">
           <div className="flex items-baseline justify-between gap-3">
             <dt className="text-navy-300">Principal</dt>
             <dd className="font-semibold">{inr(principal)}</dd>
@@ -114,7 +114,7 @@ export function EmiCalculator({ project }: { project?: Project }) {
             <dd className="font-semibold">{inr(totalPayable)}</dd>
           </div>
         </dl>
-        <p className="mt-5 text-xs leading-relaxed text-navy-400">
+        <p className="mt-4 text-xs leading-relaxed text-navy-400">
           Indicative only. Actual EMI depends on the lender&apos;s rate, fees and
           your eligibility.
         </p>

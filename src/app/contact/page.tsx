@@ -12,12 +12,12 @@ export const metadata: Metadata = {
 };
 
 const channels = [
-  {
-    label: "Phone",
-    value: site.phone,
-    href: `tel:${site.phone.replace(/[^\d+]/g, "")}`,
+  ...site.phones.map((phone, index) => ({
+    label: index === 0 ? "Phone" : "Phone (alternate)",
+    value: phone,
+    href: `tel:${phone.replace(/[^\d+]/g, "")}`,
     note: "9:30 am – 7:00 pm, all days",
-  },
+  })),
   {
     label: "WhatsApp",
     value: "Chat with our sales team",
@@ -35,7 +35,7 @@ const channels = [
 const offices = [
   {
     title: "Sales office",
-    lines: [site.address, "RERA No. " + site.rera],
+    lines: [...site.officeAddress, "RERA No. " + site.rera],
   },
   {
     title: "Site visits",
@@ -74,7 +74,7 @@ export default function ContactPage() {
                       {...(channel.href.startsWith("http")
                         ? { target: "_blank", rel: "noreferrer" }
                         : {})}
-                      className="mt-2 block text-base font-semibold text-navy-900 transition hover:text-brand-600"
+                      className="mt-2 flex min-h-11 items-center text-base font-semibold text-navy-900 transition hover:text-brand-600 sm:min-h-0"
                     >
                       {channel.value}
                     </a>

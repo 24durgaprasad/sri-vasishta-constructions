@@ -71,7 +71,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
             ))}
             <Link
               href="/search"
-              className="rounded-full border border-white/40 px-3.5 py-1.5 text-xs font-medium text-white transition hover:bg-white/10"
+              className="min-h-11 rounded-full border border-white/40 px-3.5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10 sm:min-h-0 sm:py-1.5 sm:text-xs"
             >
               Clear search
             </Link>

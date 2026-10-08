@@ -26,7 +26,7 @@ export function TopPicks() {
           {items.map((project) => (
             <div
               key={project.id}
-              className="min-w-0 flex-[0_0_88%] sm:flex-[0_0_70%] lg:flex-[0_0_62%] xl:flex-[0_0_52%]"
+              className="min-w-0 flex-[0_0_84%] sm:flex-[0_0_47%] lg:flex-[0_0_36%] xl:flex-[0_0_31%]"
             >
               <ProjectCard project={project} />
             </div>

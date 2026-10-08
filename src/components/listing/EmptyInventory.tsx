@@ -20,13 +20,19 @@ export function EmptyInventory({
       <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-navy-600">
         {body}
       </p>
-      <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">
         <Link href={primaryHref} className="btn-primary">
           {primaryLabel}
         </Link>
-        <a href={`tel:${site.phone.replace(/[^\d+]/g, "")}`} className="btn-outline">
-          Call {site.phone}
-        </a>
+        {site.phones.map((phone) => (
+          <a
+            key={phone}
+            href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+            className="btn-outline"
+          >
+            Call {phone}
+          </a>
+        ))}
       </div>
     </div>
   );

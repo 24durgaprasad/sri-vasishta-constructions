@@ -6,6 +6,9 @@ import Link from "next/link";
 import type { Project, ProjectDetail } from "@/data/types";
 import { formatArea, priceRangeLabel, projectHref } from "@/lib/format";
 import { GalleryLightbox } from "./GalleryLightbox";
+import { FinanceBadges } from "@/components/home/FinanceBadges";
+import { photoLabel } from "@/lib/gallery";
+import { site } from "@/data/site";
 
 type Props = {
   project: Project;
@@ -26,18 +29,24 @@ export function ProjectHero({ project, detail }: Props) {
   ];
 
   return (
-    <section className="bg-navy-950 pt-[73px]">
+    <section className="bg-navy-950 pb-6 pt-18 sm:pb-8">
       <div className="shell">
-        <nav aria-label="Breadcrumb" className="pt-6">
+        <nav aria-label="Breadcrumb" className="pt-3">
           <ol className="flex flex-wrap items-center gap-2 text-xs text-navy-300">
             <li>
-              <Link href="/" className="hover:text-white">
+              <Link
+                href="/"
+                className="flex min-h-11 items-center hover:text-white sm:min-h-0"
+              >
                 Home
               </Link>
             </li>
             <li aria-hidden="true">/</li>
             <li>
-              <Link href="/projects" className="hover:text-white">
+              <Link
+                href="/projects"
+                className="flex min-h-11 items-center hover:text-white sm:min-h-0"
+              >
                 Projects
               </Link>
             </li>
@@ -48,7 +57,7 @@ export function ProjectHero({ project, detail }: Props) {
           </ol>
         </nav>
 
-        <div className="grid gap-8 py-8 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:py-10">
+        <div className="grid gap-5 py-5 sm:py-6 lg:grid-cols-[1fr_1.15fr] lg:items-center">
           <div>
             <h1 className="text-3xl font-bold leading-tight text-white sm:text-4xl">
               {project.name}
@@ -64,17 +73,20 @@ export function ProjectHero({ project, detail }: Props) {
               {project.locality}, {project.city}
             </p>
 
-            <p className="mt-5 text-2xl font-bold text-brand-400">
+            <p className="mt-3 text-2xl font-bold text-brand-400">
               {priceRangeLabel(project.priceMin, project.priceMax)}
             </p>
             <p className="mt-1 text-xs text-navy-400">
               Price excludes maintenance, floor rise, stamp duty, registration and GST.
             </p>
+            <div className="mt-3">
+              <FinanceBadges tone="hero" />
+            </div>
 
-            <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-4">
+            <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
               {facts.map((fact) => (
                 <div key={fact.label} className="border-l-2 border-brand-500/60 pl-3">
-                  <dt className="text-[0.65rem] font-semibold uppercase tracking-wider text-navy-400">
+                  <dt className="text-xs font-semibold uppercase tracking-wider text-navy-400 sm:text-[0.65rem]">
                     {fact.label}
                   </dt>
                   <dd className="mt-1 text-sm font-semibold text-white">
@@ -84,15 +96,13 @@ export function ProjectHero({ project, detail }: Props) {
               ))}
             </dl>
 
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="#enquiry" className="btn-primary">
+            <div className="mt-4 flex gap-3">
+              <Link href="#enquiry" className="btn-primary min-h-11 flex-1 sm:flex-none">
                 Contact Developer
               </Link>
               <a
-                href={`tel:+919000012345?subject=${encodeURIComponent(
-                  `Enquiry about ${project.name}, ${project.locality}`,
-                )}`}
-                className="btn-outline"
+                href={site.phoneHref}
+                className="btn-outline min-h-11 flex-1 sm:flex-none"
               >
                 Call sales
               </a>
@@ -114,11 +124,14 @@ export function ProjectHero({ project, detail }: Props) {
                   {project.badge}
                 </span>
               ) : null}
+              <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-navy-900 backdrop-blur-sm">
+                {photoLabel(images[0], 0)}
+              </span>
               {images.length > 1 ? (
                 <button
                   type="button"
                   onClick={() => setLightboxIndex(0)}
-                  className="absolute bottom-3 right-3 rounded-full bg-navy-950/80 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-navy-950/95"
+                  className="absolute bottom-3 right-3 inline-flex min-h-11 items-center rounded-full bg-navy-950/80 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-navy-950/95"
                 >
                   View all {images.length} photos
                 </button>
@@ -149,6 +162,9 @@ export function ProjectHero({ project, detail }: Props) {
                     {project.badge}
                   </span>
                 ) : null}
+                <span className="absolute right-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-navy-900 backdrop-blur-sm">
+                  {photoLabel(images[0], 0)}
+                </span>
               </button>
               {images.slice(1, 5).map((src, offset) => {
                 const index = offset + 1;
@@ -170,11 +186,14 @@ export function ProjectHero({ project, detail }: Props) {
                   >
                     <Image
                       src={src}
-                      alt={index === 1 ? heroAlt : `${heroAlt} — photo ${index + 1}`}
+                      alt={`${heroAlt} — ${photoLabel(src, index)}`}
                       fill
                       sizes="(max-width: 1024px) 50vw, 20vw"
                       className="object-cover"
                     />
+                    <span className="absolute right-2 top-2 max-w-[70%] truncate rounded-full bg-white/90 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-navy-900 backdrop-blur-sm">
+                      {photoLabel(src, index)}
+                    </span>
                     {showMore ? (
                       <span
                         aria-hidden="true"

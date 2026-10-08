@@ -12,6 +12,11 @@ export function AnchorNav({ sections }: { sections: AnchorSection[] }) {
   const sectionIds = sections.map((section) => section.id).join(",");
 
   useEffect(() => {
+    const el = document.querySelector(`[data-anchor="${active}"]`);
+    el?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+  }, [active]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -38,13 +43,14 @@ export function AnchorNav({ sections }: { sections: AnchorSection[] }) {
       className="sticky top-[73px] z-30 border-b border-navy-100 bg-white/95 backdrop-blur-md"
     >
       <div className="shell">
-        <ul className="no-scrollbar -mx-1 flex items-center gap-1 overflow-x-auto py-2.5">
+        <ul className="no-scrollbar -mx-1 flex snap-x items-center gap-1 overflow-x-auto px-1 py-2.5">
           {sections.map((section) => (
-            <li key={section.id}>
+            <li key={section.id} className="flex-none snap-start">
               <a
                 href={`#${section.id}`}
+                data-anchor={section.id}
                 aria-current={active === section.id ? "true" : undefined}
-                className={`block whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition ${
+                className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-medium transition ${
                   active === section.id
                     ? "bg-navy-900 text-white"
                     : "text-navy-600 hover:bg-navy-50 hover:text-navy-900"

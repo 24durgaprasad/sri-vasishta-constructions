@@ -8,7 +8,7 @@ export function NearbyProjects({ projects }: { projects: Project[] }) {
   return (
     <Carousel label="nearby project" className="shell">
       {projects.map((project) => (
-        <div key={project.id} className="min-w-0 basis-[88%] sm:basis-[70%] lg:basis-[46%]">
+          <div key={project.id} className="min-w-0 basis-[84%] sm:basis-[70%] lg:basis-[46%]">
           <InvestmentCard project={project} />
         </div>
       ))}

@@ -46,9 +46,9 @@ export function FloorPlanExplorer({ floorPlans }: Props) {
   const viewBoxHeight = maxHeight * ISO_Y + WALL_HEIGHT + 8;
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-      <div className="rounded-card-lg border border-navy-100 bg-navy-50 p-4 sm:p-6">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+    <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+      <div className="rounded-card-lg border border-navy-100 bg-navy-50 p-3 sm:p-5">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-navy-500">
               {plan.label}
@@ -100,7 +100,7 @@ export function FloorPlanExplorer({ floorPlans }: Props) {
           </g>
         </svg>
 
-        <p className="mt-4 text-xs leading-relaxed text-navy-500">
+        <p className="mt-3 text-[11px] leading-relaxed text-navy-500">
           Indicative schematic based on configuration and typical room proportions.
           Not the architect&apos;s drawing, and not to scale.
         </p>
@@ -110,27 +110,27 @@ export function FloorPlanExplorer({ floorPlans }: Props) {
         <p className="text-sm font-semibold text-navy-700">
           Spaces in this plan
         </p>
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+        <ul className="mt-3 grid grid-cols-2 gap-2">
           {plan.rooms.map((room) => (
             <li
               key={room.label}
-              className="flex items-baseline justify-between gap-3 rounded-xl border border-navy-100 bg-white px-3.5 py-2.5"
+              className="flex min-w-0 items-baseline justify-between gap-2 rounded-xl border border-navy-100 bg-white px-3 py-2"
             >
-              <span className="text-sm text-navy-800">{room.label}</span>
-              <span className="shrink-0 text-xs text-navy-500">
+              <span className="truncate text-[13px] text-navy-800">{room.label}</span>
+              <span className="shrink-0 text-[11px] text-navy-500">
                 {formatDimension(room.width)} &times; {formatDimension(room.height)}
               </span>
             </li>
           ))}
         </ul>
 
-        <p className="mt-6 text-sm font-semibold text-navy-700">
+        <p className="mt-4 text-sm font-semibold text-navy-700">
           Sizes and configurations
         </p>
         <div
           role="tablist"
           aria-label="Floor plan size and configuration"
-          className="mt-3 flex flex-wrap gap-2"
+          className="no-scrollbar -mx-1 mt-2 flex snap-x gap-2 overflow-x-auto px-1 py-1 sm:flex-wrap sm:overflow-visible"
         >
           {floorPlans.map((item, index) => (
             <button
@@ -139,7 +139,7 @@ export function FloorPlanExplorer({ floorPlans }: Props) {
               role="tab"
               aria-selected={index === activeIndex}
               onClick={() => setActiveIndex(index)}
-              className={`rounded-xl border px-4 py-2 text-left transition ${
+              className={`min-h-11 flex-none snap-start rounded-xl border px-3 py-2 text-left transition sm:flex-1 ${
                 index === activeIndex
                   ? "border-navy-900 bg-navy-900 text-white"
                   : "border-navy-200 bg-white text-navy-700 hover:border-navy-300 hover:bg-navy-50"
@@ -155,7 +155,7 @@ export function FloorPlanExplorer({ floorPlans }: Props) {
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-3 rounded-xl border border-navy-100 bg-white px-4 py-3">
+        <div className="mt-4 flex flex-wrap items-center gap-2 rounded-xl border border-navy-100 bg-white px-3 py-2.5">
           <p className="text-sm text-navy-600">
             Is the pricing &amp; floor plan helpful?
           </p>

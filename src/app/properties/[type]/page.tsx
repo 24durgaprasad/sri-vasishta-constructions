@@ -5,7 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProjectGrid } from "@/components/listing/ProjectGrid";
 import { EmptyInventory } from "@/components/listing/EmptyInventory";
-import { ListingFilters } from "@/components/listing/ListingFilters";
+import { FilterSelect } from "@/components/listing/FilterSelect";
 import {
   categoryMeta,
   projectsInCategory,
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   const meta = categoryMeta(type as PropertyCategory);
   return {
-    title: `${meta.label} in ${site.address.split(",")[0]} | ${meta.description} | ${site.name}`,
+    title: `${meta.label} in ${site.city} | ${meta.description} | ${site.name}`,
     description: `${meta.description}. Browse every ${meta.label.toLowerCase()} project from ${site.name} with current pricing.`,
   };
 }
@@ -50,11 +50,12 @@ export default async function PropertyTypePage({ params }: Params) {
       <main>
         <PageHero
           eyebrow="Properties"
-          title={`${meta.label} in ${site.address.split(",")[0]}`}
+          title={`${meta.label} in ${site.city}`}
           description={meta.description}
           parent={{ label: "Properties", href: "/properties" }}
         >
-          <ListingFilters
+          <FilterSelect
+            variant="onDark"
             label="Switch property type"
             items={propertyCategories.map((item) => ({
               label: item.label,
