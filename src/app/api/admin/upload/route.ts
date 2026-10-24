@@ -20,10 +20,10 @@ export async function POST(req: Request) {
   const timestamp = Math.round(Date.now() / 1000);
   const paramsToSign = `folder=${folder}&timestamp=${timestamp}`;
 
-  // Create HMAC-SHA1 signature
-  const { createHmac } = await import("node:crypto");
-  const signature = createHmac("sha1", CLOUDINARY_API_SECRET)
-    .update(paramsToSign)
+  // Create Cloudinary SHA1 signature
+  const { createHash } = await import("node:crypto");
+  const signature = createHash("sha1")
+    .update(`${paramsToSign}${CLOUDINARY_API_SECRET}`)
     .digest("hex");
 
   const uploadFormData = new FormData();
