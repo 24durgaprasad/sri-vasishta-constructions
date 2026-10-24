@@ -61,9 +61,12 @@ const emiFor = (
   return { emi, totalPayable, totalInterest: totalPayable - principal };
 };
 
+const formatPrice = (value: number): string => priceFromLabel(value);
+
 export {
   priceRangeLabel,
   priceFromLabel,
+  formatPrice,
   formatNumber,
   pricePerSqftLabel,
   formatArea,
