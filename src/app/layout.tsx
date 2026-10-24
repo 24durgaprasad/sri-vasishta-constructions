@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Manrope } from "next/font/google";
 import { FloatingActions } from "@/components/layout/FloatingActions";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${manrope.variable}`}>
       <body className="font-sans">
+        <OrganizationJsonLd />
         {children}
         <FloatingActions />
       </body>
