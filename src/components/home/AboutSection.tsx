@@ -73,7 +73,7 @@ export function AboutSection() {
           <div className="lg:col-span-7 lg:pl-6">
             <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-brand-700">
               <span className="size-1.5 rounded-full bg-brand-500" />
-              // Why Choose Vasishta //
+              Why Choose Sri Vasishta
             </span>
 
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
