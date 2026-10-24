@@ -3,17 +3,18 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
 import { StatsBar } from "@/components/home/StatsBar";
-import { LocalityBar } from "@/components/home/LocalityBar";
 import { TopPicks } from "@/components/home/TopPicks";
+import { LocalityBar } from "@/components/home/LocalityBar";
+import { AboutSection } from "@/components/home/AboutSection";
 import { Highlighted } from "@/components/home/Highlighted";
-import { Tieups } from "@/components/home/Tieups";
 import { HighDemand } from "@/components/home/HighDemand";
+import { Tieups } from "@/components/home/Tieups";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `${site.name} | Flats, Villas, Plots & Commercial Properties`,
+  title: `${site.name} | Flats, Luxury Villas, Plots & Commercial Properties in Visakhapatnam`,
   description:
-    "Browse RERA-approved flats, houses, plots, villas and commercial properties from Sri Vasishta Constructions across Visakhapatnam.",
+    "Explore RERA-approved gated communities, apartments, luxury villas, approved plots and commercial spaces from Sri Vasishta Constructions across Visakhapatnam.",
 };
 
 export default function Home() {
@@ -23,11 +24,12 @@ export default function Home() {
       <main>
         <Hero />
         <StatsBar />
-        <LocalityBar />
         <TopPicks />
+        <LocalityBar />
+        <AboutSection />
         <Highlighted />
-        <Tieups />
         <HighDemand />
+        <Tieups />
       </main>
       <Footer />
     </>
