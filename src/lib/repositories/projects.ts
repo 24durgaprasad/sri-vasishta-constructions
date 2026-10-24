@@ -5,6 +5,7 @@ import { projects as staticProjects } from "@/data/projects";
 import { getProjectWithDetail, getProjectDetail } from "@/data/projectDetails";
 import { readStore, writeStore } from "@/lib/store";
 import { revalidateTag } from "next/cache";
+import { slugify } from "@/lib/format";
 import type { Project, ProjectCollection, ProjectDetail } from "@/data/types";
 
 /** Serialisable project shape used by the repository layer */
@@ -172,23 +173,79 @@ export async function getAllProjectsAdmin(): Promise<RepoProject[]> {
 export async function getProjectBySlug(slug: string): Promise<RepoProject | null> {
   if (isMongoConfigured) {
     await connectDB();
-    const doc = await ProjectModel.findOne({ slug, published: true });
+    const target = slugify(slug);
+
+    // 1. Try direct match on slug
+    let doc = await ProjectModel.findOne({ slug, published: true });
+    if (!doc && target !== slug) {
+      doc = await ProjectModel.findOne({ slug: target, published: true });
+    }
+
+    // 2. If not found by slug, search all published projects by slugified name or ID
+    if (!doc) {
+      const all = await ProjectModel.find({ published: true });
+      doc =
+        all.find(
+          (d) =>
+            slugify(d.slug || "") === target ||
+            slugify(d.name || "") === target ||
+            d.slug === slug ||
+            String(d._id) === slug
+        ) ?? null;
+    }
+
     if (!doc) return null;
     return mongoToRepo(doc);
   }
   const all = await getAllProjects();
-  return all.find((p) => p.slug === slug || p.id === slug) ?? null;
+  const target = slugify(slug);
+  return (
+    all.find(
+      (p) =>
+        slugify(p.slug || "") === target ||
+        slugify(p.name || "") === target ||
+        p.slug === slug ||
+        p.id === slug
+    ) ?? null
+  );
 }
 
 export async function getProjectBySlugAdmin(slug: string): Promise<RepoProject | null> {
   if (isMongoConfigured) {
     await connectDB();
-    const doc = await ProjectModel.findOne({ slug });
+    const target = slugify(slug);
+
+    let doc = await ProjectModel.findOne({ slug });
+    if (!doc && target !== slug) {
+      doc = await ProjectModel.findOne({ slug: target });
+    }
+
+    if (!doc) {
+      const all = await ProjectModel.find({});
+      doc =
+        all.find(
+          (d) =>
+            slugify(d.slug || "") === target ||
+            slugify(d.name || "") === target ||
+            d.slug === slug ||
+            String(d._id) === slug
+        ) ?? null;
+    }
+
     if (!doc) return null;
     return mongoToRepo(doc);
   }
   const all = await getAllProjectsAdmin();
-  return all.find((p) => p.slug === slug || p.id === slug) ?? null;
+  const target = slugify(slug);
+  return (
+    all.find(
+      (p) =>
+        slugify(p.slug || "") === target ||
+        slugify(p.name || "") === target ||
+        p.slug === slug ||
+        p.id === slug
+    ) ?? null
+  );
 }
 
 export async function createProject(data: Omit<RepoProject, "id">): Promise<RepoProject> {
