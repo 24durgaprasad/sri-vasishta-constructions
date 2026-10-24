@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { findAdminByEmail, verifyAdminPassword, ensureAdminExists } from "@/lib/repositories/admin";
 import { createSession, setSessionCookie } from "@/lib/auth";
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from "@/lib/env";
 
-// Simple in-memory rate limiter (5 attempts per 15 min per IP)
+// Simple in-memory rate limiter (10 attempts per 15 min per IP)
 const attempts = new Map<string, { count: number; resetAt: number }>();
 
 function getRateLimit(ip: string): boolean {
@@ -13,7 +14,7 @@ function getRateLimit(ip: string): boolean {
     attempts.set(ip, { count: 1, resetAt: now + 15 * 60 * 1000 });
     return false; // not limited
   }
-  if (entry.count >= 5) return true; // limited
+  if (entry.count >= 10) return true; // limited
   entry.count++;
   return false;
 }
@@ -41,13 +42,41 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 400 });
   }
 
-  await ensureAdminExists();
-  const admin = await findAdminByEmail(parsed.data.email);
-  if (!admin || !(await verifyAdminPassword(admin, parsed.data.password))) {
-    return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 401 });
+  const inputEmail = parsed.data.email.trim().toLowerCase();
+  const inputPassword = parsed.data.password;
+
+  let admin = null;
+  try {
+    await ensureAdminExists();
+    admin = await findAdminByEmail(inputEmail);
+  } catch (err) {
+    console.warn("Database lookup warning during login:", (err as Error).message);
   }
 
-  const token = await createSession({ id: admin.id, email: admin.email, name: admin.name, role: admin.role });
-  await setSessionCookie(token);
-  return NextResponse.json({ ok: true });
+  // 1. Check database admin if available
+  if (admin) {
+    const isValid = await verifyAdminPassword(admin, inputPassword);
+    if (isValid) {
+      const token = await createSession({ id: admin.id, email: admin.email, name: admin.name, role: admin.role });
+      await setSessionCookie(token);
+      return NextResponse.json({ ok: true });
+    }
+  }
+
+  // 2. Direct fallback to environment variables
+  if (
+    inputEmail === ADMIN_EMAIL.trim().toLowerCase() &&
+    inputPassword === ADMIN_PASSWORD
+  ) {
+    const token = await createSession({
+      id: "admin-env",
+      email: ADMIN_EMAIL,
+      name: "Admin",
+      role: "owner",
+    });
+    await setSessionCookie(token);
+    return NextResponse.json({ ok: true });
+  }
+
+  return NextResponse.json({ ok: false, error: "Invalid email or password." }, { status: 401 });
 }
