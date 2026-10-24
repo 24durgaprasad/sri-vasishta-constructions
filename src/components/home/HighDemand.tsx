@@ -4,9 +4,10 @@ import Link from "next/link";
 import { Carousel } from "@/components/ui/Carousel";
 import { InvestmentCard } from "./InvestmentCard";
 import { projectsBy } from "@/data/projects";
+import type { Project } from "@/data/types";
 
-export function HighDemand() {
-  const items = projectsBy("highDemand");
+export function HighDemand({ projects }: { projects?: Project[] }) {
+  const items = projects && projects.length > 0 ? projects : projectsBy("highDemand");
 
   return (
     <section aria-labelledby="high-demand-heading" className="bg-slate-50/70 py-16 lg:py-24">

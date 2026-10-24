@@ -4,9 +4,10 @@ import Link from "next/link";
 import { Carousel } from "@/components/ui/Carousel";
 import { HighlightCard } from "./HighlightCard";
 import { projectsBy } from "@/data/projects";
+import type { Project } from "@/data/types";
 
-export function Highlighted() {
-  const items = projectsBy("highlighted");
+export function Highlighted({ projects }: { projects?: Project[] }) {
+  const items = projects && projects.length > 0 ? projects : projectsBy("highlighted");
 
   return (
     <section aria-labelledby="highlighted-heading" className="bg-white py-16 lg:py-24">

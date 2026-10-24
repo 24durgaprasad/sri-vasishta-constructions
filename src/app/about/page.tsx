@@ -3,22 +3,17 @@ import Link from "next/link";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageHero } from "@/components/layout/PageHero";
-import { projects } from "@/data/projects";
 import { localities } from "@/data/localities";
-import { banks, interiorPartners } from "@/data/partners";
 import { site } from "@/data/site";
+import { getAllProjects } from "@/lib/repositories/projects";
+import { getAllPartners } from "@/lib/repositories/partners";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `About ${site.name} | Build Your Dreams`,
   description: `${site.name} builds RERA-approved apartments, villas, plots and commercial spaces across Visakhapatnam.`,
 };
-
-const facts = [
-  { label: "Projects delivered and ongoing", value: `${projects.length}` },
-  { label: "Localities we build in", value: `${localities.length}` },
-  { label: "Lending partners", value: `${banks.length}` },
-  { label: "Interior partners", value: `${interiorPartners.length}` },
-];
 
 const values = [
   {
@@ -48,12 +43,27 @@ const milestones = [
   },
   {
     period: "Today",
-    title: "Residential and commercial",
-    body: `Now ${projects.length} projects spanning homes, approved plots and commercial floors, with ${banks.length} lending partners for buyers.`,
+    title: "Delivering modern coastal living",
+    body: "Contemporary high-rises and approved open layouts engineered for modern living.",
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [repoProjects, repoPartners] = await Promise.all([
+    getAllProjects(),
+    getAllPartners(),
+  ]);
+
+  const banks = repoPartners.filter((p) => p.category === "bank");
+  const interiorPartners = repoPartners.filter((p) => p.category === "interiors");
+
+  const facts = [
+    { label: "Projects delivered and ongoing", value: `${repoProjects.length}+` },
+    { label: "Localities we build in", value: `${localities.length}+` },
+    { label: "Lending partners", value: `${banks.length}` },
+    { label: "Interior partners", value: `${interiorPartners.length}` },
+  ];
+
   return (
     <>
       <Header />

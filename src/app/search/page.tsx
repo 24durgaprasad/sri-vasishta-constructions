@@ -11,6 +11,9 @@ import {
   searchProjects,
 } from "@/lib/catalog";
 import { site } from "@/data/site";
+import { getAllProjects, repoToProject } from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Search properties | ${site.name}`,
@@ -29,7 +32,11 @@ const many = (value: string | string[] | undefined): string[] =>
   Array.isArray(value) ? value : value ? [value] : [];
 
 export default async function SearchPage({ searchParams }: SearchParams) {
-  const params = (await searchParams) ?? {};
+  const [params, repoProjects] = await Promise.all([
+    (await searchParams) ?? {},
+    getAllProjects(),
+  ]);
+  const projects = repoProjects.map(repoToProject);
   const query = one(params.q).trim();
   const rawIntent = one(params.intent);
   const intent = isSearchIntent(rawIntent) ? rawIntent : "buy";
@@ -37,7 +44,7 @@ export default async function SearchPage({ searchParams }: SearchParams) {
     .map((chip) => chip.trim())
     .filter(Boolean);
 
-  const results = searchProjects({ query, intent, chips });
+  const results = searchProjects({ query, intent, chips }, projects);
 
   const criteria = [
     query ? `“${query}”` : "all listings",

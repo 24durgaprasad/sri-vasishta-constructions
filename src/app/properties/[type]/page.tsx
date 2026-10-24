@@ -13,6 +13,9 @@ import {
   type PropertyCategory,
 } from "@/lib/catalog";
 import { site } from "@/data/site";
+import { getAllProjects, repoToProject } from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 const categories = propertyCategories.map((item) => item.id);
 
@@ -36,13 +39,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function PropertyTypePage({ params }: Params) {
-  const { type } = await params;
+  const [{ type }, repoProjects] = await Promise.all([
+    params,
+    getAllProjects(),
+  ]);
   if (!categories.includes(type as PropertyCategory)) {
     notFound();
   }
 
+  const projects = repoProjects.map(repoToProject);
   const meta = categoryMeta(type as PropertyCategory);
-  const results = projectsInCategory(meta.id);
+  const results = projectsInCategory(meta.id, projects);
 
   return (
     <>

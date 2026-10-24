@@ -8,6 +8,9 @@ import { PageHero } from "@/components/layout/PageHero";
 import { banks, interiorPartners } from "@/data/partners";
 import type { Partner } from "@/data/types";
 import { site } from "@/data/site";
+import { getAllPartners, repoToPartner } from "@/lib/repositories/partners";
+
+export const revalidate = 0;
 
 type Page = {
   slug: string;
@@ -102,9 +105,24 @@ export default async function PartnerPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const page = pages.find((item) => item.slug === slug);
-  if (!page) notFound();
+  const [{ slug }, repoPartners] = await Promise.all([
+    params,
+    getAllPartners(),
+  ]);
+
+  const liveBanks = repoPartners.filter((p) => p.category === "bank").map(repoToPartner);
+  const liveInteriors = repoPartners.filter((p) => p.category === "interiors").map(repoToPartner);
+
+  const basePage = pages.find((item) => item.slug === slug);
+  if (!basePage) notFound();
+
+  const page: Page = {
+    ...basePage,
+    partners:
+      slug === "banks"
+        ? (liveBanks.length > 0 ? liveBanks : basePage.partners)
+        : (liveInteriors.length > 0 ? liveInteriors : basePage.partners),
+  };
 
   return (
     <>

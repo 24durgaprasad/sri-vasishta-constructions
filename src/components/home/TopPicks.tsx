@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Carousel } from "@/components/ui/Carousel";
 import { ProjectCard } from "./ProjectCard";
 import { projectsBy } from "@/data/projects";
+import type { Project } from "@/data/types";
 
 const filterTabs = [
   { id: "all", label: "All Properties" },
@@ -13,9 +14,9 @@ const filterTabs = [
   { id: "plots", label: "Plots & Land" },
 ];
 
-export function TopPicks() {
+export function TopPicks({ projects }: { projects?: Project[] }) {
   const [activeTab, setActiveTab] = useState("all");
-  const allItems = projectsBy("topPicks");
+  const allItems = projects && projects.length > 0 ? projects : projectsBy("topPicks");
 
   const filteredItems = allItems.filter((p) => {
     if (activeTab === "flats") return p.bhks.some((b) => b.includes("BHK"));

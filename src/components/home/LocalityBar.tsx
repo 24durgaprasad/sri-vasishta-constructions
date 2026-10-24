@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { localities } from "@/data/localities";
-import { projects } from "@/data/projects";
+import { projects as staticProjects } from "@/data/projects";
+import type { Project } from "@/data/types";
 
 // Associate high-quality Vizag architectural/locality images with top localities
 const localityImages: Record<string, string> = {
@@ -15,11 +16,12 @@ const localityImages: Record<string, string> = {
   Pendurthi: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=70",
 };
 
-export function LocalityBar() {
+export function LocalityBar({ projects }: { projects?: Project[] }) {
   const topLocalities = localities.slice(0, 8);
+  const projectList = projects && projects.length > 0 ? projects : staticProjects;
 
   const getCount = (name: string) => {
-    const count = projects.filter((p) => p.locality.toLowerCase().includes(name.toLowerCase())).length;
+    const count = projectList.filter((p) => p.locality.toLowerCase().includes(name.toLowerCase())).length;
     return count > 0 ? `${count} ${count === 1 ? "Property" : "Properties"}` : "RERA Approved";
   };
 
@@ -30,7 +32,7 @@ export function LocalityBar() {
           <div className="max-w-xl">
             <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-brand-700">
               <span className="size-1.5 rounded-full bg-brand-500" />
-              // Prime Neighborhoods //
+              Prime Neighborhoods
             </span>
             <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
               Explore Properties By Locality

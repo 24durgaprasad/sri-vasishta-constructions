@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/db";
 import { PartnerModel } from "@/lib/models/partner.model";
 import { banks, interiorPartners } from "@/data/partners";
 import { readStore, writeStore } from "@/lib/store";
+import type { Partner } from "@/data/types";
 
 export interface RepoPartner {
   id: string;
@@ -115,4 +116,13 @@ export async function deletePartner(id: string): Promise<boolean> {
   if (next.length === items.length) return false;
   await writeStore("partners", next);
   return true;
+}
+
+export function repoToPartner(p: RepoPartner): Partner {
+  return {
+    id: p.id,
+    name: p.name,
+    logo: p.logo || p.name,
+    logoSrc: p.logoSrc,
+  };
 }

@@ -5,28 +5,14 @@ import { ToolShell } from "@/components/tools/ToolShell";
 import { PriceCalculator, type RateCard } from "@/components/tools/PriceCalculator";
 import { detailsList } from "@/data/projectDetails";
 import { site } from "@/data/site";
+import { getAllProjects } from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Property Price Calculator | ${site.name}`,
   description:
     "Estimate property value from the prevailing rate per square foot in Visakhapatnam localities, with area and negotiation adjustments.",
-};
-
-const buildRates = (): RateCard[] => {
-  const grouped = new Map<string, number[]>();
-
-  detailsList.forEach(({ project, detail }) => {
-    const values = grouped.get(project.locality) ?? [];
-    values.push(detail.localityPricePerSqft);
-    grouped.set(project.locality, values);
-  });
-
-  return Array.from(grouped.entries())
-    .map(([name, values]) => ({
-      name,
-      rate: Math.round(values.reduce((sum, value) => sum + value, 0) / values.length),
-    }))
-    .sort((a, b) => b.rate - a.rate);
 };
 
 const notes = [
@@ -44,8 +30,34 @@ const notes = [
   },
 ];
 
-export default function PriceToolPage() {
-  const rates = buildRates();
+export default async function PriceToolPage() {
+  const repoProjects = await getAllProjects();
+  const grouped = new Map<string, number[]>();
+
+  repoProjects.forEach((p) => {
+    const rate = p.localityPricePerSqft || p.pricePerSqft;
+    if (rate && p.locality) {
+      const values = grouped.get(p.locality) ?? [];
+      values.push(rate);
+      grouped.set(p.locality, values);
+    }
+  });
+
+  // Fallback to static if repo has no rates
+  if (grouped.size === 0) {
+    detailsList.forEach(({ project, detail }) => {
+      const values = grouped.get(project.locality) ?? [];
+      values.push(detail.localityPricePerSqft);
+      grouped.set(project.locality, values);
+    });
+  }
+
+  const rates: RateCard[] = Array.from(grouped.entries())
+    .map(([name, values]) => ({
+      name,
+      rate: Math.round(values.reduce((sum, value) => sum + value, 0) / values.length),
+    }))
+    .sort((a, b) => b.rate - a.rate);
 
   return (
     <>

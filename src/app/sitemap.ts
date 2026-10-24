@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
-import { projects } from "@/data/projects";
+import { getAllProjects } from "@/lib/repositories/projects";
 import { slugify } from "@/lib/format";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vasishtaconstructions.com";
+  const projects = await getAllProjects();
 
   const staticRoutes = [
     "",

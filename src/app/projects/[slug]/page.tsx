@@ -21,32 +21,27 @@ import { RatingsReviews } from "@/components/project/RatingsReviews";
 import { QaSection } from "@/components/project/QaSection";
 import { site } from "@/data/site";
 import { EmiCalculator } from "@/components/project/EmiCalculator";
-import { projects } from "@/data/projects";
-import { getProjectDetail } from "@/data/projectDetails";
 import { priceRangeLabel, slugify } from "@/lib/format";
+import {
+  getAllProjects,
+  getProjectBySlug,
+  repoToProject,
+  repoToDetail,
+} from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 type Params = { params: Promise<{ slug: string }> };
 
-const findBySlug = (slug: string) =>
-  projects.find(
-    (project) => project.id === slug || slugify(project.name) === slug,
-  );
-
-export function generateStaticParams() {
-  return [
-    ...projects.map((project) => ({ slug: slugify(project.name) })),
-    ...projects.map((project) => ({ slug: project.id })),
-  ];
-}
-
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const project = findBySlug(slug);
-  if (!project) {
+  const repo = await getProjectBySlug(slug);
+  if (!repo) {
     return { title: "Project not found" };
   }
 
-  const detail = getProjectDetail(project.id);
+  const project = repoToProject(repo);
+  const detail = repoToDetail(repo);
 
   return {
     title: `${project.name} in ${project.locality}, ${project.city} | Price, Floor Plan & Amenities`,
@@ -61,12 +56,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Params) {
   const { slug } = await params;
-  const project = findBySlug(slug);
-  if (!project) {
+  const [repo, allRepo] = await Promise.all([
+    getProjectBySlug(slug),
+    getAllProjects(),
+  ]);
+
+  if (!repo) {
     notFound();
   }
 
-  const detail = getProjectDetail(project.id);
+  const project = repoToProject(repo);
+  const detail = repoToDetail(repo);
+  const projects = allRepo.map(repoToProject);
   const hasGallery = (detail.gallery ?? []).length >= 2;
   const hasSpecs = (detail.specifications ?? []).length > 0;
   const hasRatings =

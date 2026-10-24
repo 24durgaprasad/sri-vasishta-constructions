@@ -43,6 +43,7 @@ export interface IProject extends Document {
   published: boolean;
   localityPricePerSqft?: number;
   localityPriceTrend?: number;
+  bhks?: string[];
 }
 
 const ProjectSchema = new Schema<IProject>(
@@ -99,6 +100,7 @@ const ProjectSchema = new Schema<IProject>(
     published: { type: Boolean, default: false, index: true },
     localityPricePerSqft: Number,
     localityPriceTrend: Number,
+    bhks: [String],
   },
   { timestamps: true }
 );

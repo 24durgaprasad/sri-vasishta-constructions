@@ -6,9 +6,12 @@ import { PageHero } from "@/components/layout/PageHero";
 import { ProjectGrid } from "@/components/listing/ProjectGrid";
 import { EmptyInventory } from "@/components/listing/EmptyInventory";
 import { FilterSelect } from "@/components/listing/FilterSelect";
-import { projects, projectsInCategory, propertyCategories } from "@/lib/catalog";
+import { projectsInCategory, propertyCategories } from "@/lib/catalog";
 import { localities } from "@/data/localities";
 import { site } from "@/data/site";
+import { getAllProjects, repoToProject } from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: `Properties in ${site.city} | ${site.name}`,
@@ -24,7 +27,11 @@ const first = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value;
 
 export default async function PropertiesPage({ searchParams }: SearchParams) {
-  const params = (await searchParams) ?? {};
+  const [params, repoProjects] = await Promise.all([
+    (await searchParams) ?? {},
+    getAllProjects(),
+  ]);
+  const projects = repoProjects.map(repoToProject);
   const locality = first(params.locality);
 
   const results = locality

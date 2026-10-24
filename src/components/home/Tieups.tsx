@@ -1,7 +1,17 @@
 import Image from "next/image";
-import { banks, interiorPartners } from "@/data/partners";
+import { banks as staticBanks, interiorPartners as staticInteriors } from "@/data/partners";
+import type { Partner } from "@/data/types";
 
-export function Tieups() {
+export function Tieups({
+  banks: propBanks,
+  interiorPartners: propInteriors,
+}: {
+  banks?: Partner[];
+  interiorPartners?: Partner[];
+}) {
+  const bankList = propBanks && propBanks.length > 0 ? propBanks : staticBanks;
+  const interiorList = propInteriors && propInteriors.length > 0 ? propInteriors : staticInteriors;
+
   return (
     <section className="border-b border-navy-100 bg-white py-16 lg:py-20">
       <div className="shell">
@@ -24,7 +34,7 @@ export function Tieups() {
             Bank Loan Approvals Available From
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            {banks.map((bank) => (
+            {bankList.map((bank) => (
               <div
                 key={bank.id}
                 className="flex h-14 w-36 items-center justify-center rounded-xl border border-navy-100/70 bg-slate-50/60 p-3 transition-all duration-300 hover:border-navy-200 hover:bg-white hover:shadow-sm"
@@ -53,7 +63,7 @@ export function Tieups() {
             Interior &amp; Lifestyle Collaborations
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-            {interiorPartners.map((p) => (
+            {interiorList.map((p) => (
               <div
                 key={p.id}
                 className="flex h-14 w-36 items-center justify-center rounded-xl border border-navy-100/70 bg-slate-50/60 p-3 transition-all duration-300 hover:border-navy-200 hover:bg-white hover:shadow-sm"

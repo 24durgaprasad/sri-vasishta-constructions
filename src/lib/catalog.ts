@@ -105,11 +105,11 @@ export const categoryOf = (project: Project): PropertyCategory => {
 export const isCommercial = (project: Project): boolean =>
   categoryOf(project) === "commercial";
 
-export const projectsInCategory = (category: PropertyCategory): Project[] =>
-  projects.filter((project) => categoryOf(project) === category);
+export const projectsInCategory = (category: PropertyCategory, list: Project[] = projects): Project[] =>
+  list.filter((project) => categoryOf(project) === category);
 
-export const localitiesWithProjects = (): string[] =>
-  Array.from(new Set(projects.map((project) => project.locality))).sort();
+export const localitiesWithProjects = (list: Project[] = projects): string[] =>
+  Array.from(new Set(list.map((project) => project.locality))).sort();
 
 /** Counts parsed from labels like "3 BHK". Non-BHK labels (areas) are ignored. */
 const bhkCounts = (project: Project): number[] =>
@@ -183,11 +183,11 @@ export const matchesQuery = (project: Project, query: string): boolean => {
   return words.every((word) => haystack.some((token) => token.includes(word)));
 };
 
-const scopeForIntent = (intent: SearchIntent): Project[] => {
+const scopeForIntent = (intent: SearchIntent, list: Project[] = projects): Project[] => {
   if (intent === "rent") return [];
-  if (intent === "commercial") return projectsInCategory("commercial");
-  if (intent === "plots") return projectsInCategory("plots");
-  return projects.filter((project) => !isCommercial(project));
+  if (intent === "commercial") return projectsInCategory("commercial", list);
+  if (intent === "plots") return projectsInCategory("plots", list);
+  return list.filter((project) => !isCommercial(project));
 };
 
 export type SearchCriteria = {
@@ -196,17 +196,16 @@ export type SearchCriteria = {
   chips?: string[];
 };
 
-export const searchProjects = ({
-  query,
-  intent = "buy",
-  chips = [],
-}: SearchCriteria): Project[] => {
+export const searchProjects = (
+  { query, intent = "buy", chips = [] }: SearchCriteria,
+  list: Project[] = projects,
+): Project[] => {
   const queryWords = significant(tokens(query ?? ""));
 
   const matchesWords = (words: string[], haystack: string[]): boolean =>
     words.every((word) => haystack.some((token) => token.includes(word)));
 
-  return scopeForIntent(intent).filter((project) => {
+  return scopeForIntent(intent, list).filter((project) => {
     const text = [
       ...tokens(
         [

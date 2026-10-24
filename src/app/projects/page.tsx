@@ -9,12 +9,14 @@ import { FilterSelect } from "@/components/listing/FilterSelect";
 import { ProjectSearchBar } from "@/components/listing/ProjectSearchBar";
 import {
   matchesQuery,
-  projects,
   projectsInCategory,
   propertyCategories,
 } from "@/lib/catalog";
 import type { Project } from "@/data/types";
 import { site } from "@/data/site";
+import { getAllProjects, repoToProject } from "@/lib/repositories/projects";
+
+export const revalidate = 0;
 
 const collections: { param: string; label: string; id: Project["collection"] }[] = [
   { param: "highlighted", label: "Highlighted", id: "highlighted" },
@@ -34,7 +36,11 @@ const first = (value: string | string[] | undefined): string | undefined =>
   Array.isArray(value) ? value[0] : value;
 
 export default async function ProjectsPage({ searchParams }: SearchParams) {
-  const params = (await searchParams) ?? {};
+  const [params, repoProjects] = await Promise.all([
+    (await searchParams) ?? {},
+    getAllProjects(),
+  ]);
+  const projects = repoProjects.map(repoToProject);
   const locality = first(params.locality);
   const category = first(params.category);
   const collection = first(params.collection);

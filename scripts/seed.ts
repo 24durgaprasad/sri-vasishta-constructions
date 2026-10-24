@@ -46,7 +46,9 @@ async function seed() {
   for (const p of staticProjects) {
     const existing = await ProjectModel.findOne({ slug: p.id });
     if (existing) {
-      console.log(`Project exists: ${p.id}`);
+      existing.bhks = p.bhks;
+      await existing.save();
+      console.log(`Updated project bhks: ${p.id}`);
       continue;
     }
     const { detail } = getProjectWithDetail(p);
@@ -84,6 +86,7 @@ async function seed() {
       published: true,
       localityPricePerSqft: detail?.localityPricePerSqft,
       localityPriceTrend: detail?.localityPriceTrend,
+      bhks: p.bhks,
     });
     console.log(`Seeded project: ${p.id} — ${p.name}`);
   }

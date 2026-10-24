@@ -2,10 +2,10 @@ import { isMongoConfigured } from "@/lib/env";
 import { connectDB } from "@/lib/db";
 import { ProjectModel } from "@/lib/models/project.model";
 import { projects as staticProjects } from "@/data/projects";
-import { getProjectWithDetail } from "@/data/projectDetails";
+import { getProjectWithDetail, getProjectDetail } from "@/data/projectDetails";
 import { readStore, writeStore } from "@/lib/store";
 import { revalidateTag } from "next/cache";
-import type { Project } from "@/data/types";
+import type { Project, ProjectCollection, ProjectDetail } from "@/data/types";
 
 /** Serialisable project shape used by the repository layer */
 export interface RepoProject {
@@ -142,6 +142,7 @@ function mongoToRepo(doc: unknown): RepoProject {
     published: Boolean(obj.published ?? true),
     localityPricePerSqft: obj.localityPricePerSqft as number | undefined,
     localityPriceTrend: obj.localityPriceTrend as number | undefined,
+    bhks: (obj.bhks as string[]) ?? (obj.configurations as Array<{ label: string }>)?.map((c) => c.label) ?? [],
   };
 }
 
@@ -251,4 +252,63 @@ export async function countProjects(): Promise<number> {
   }
   const items = await readStore<RepoProject[]>("projects", []);
   return items.length || staticProjects.length;
+}
+
+export function repoToProject(p: RepoProject): Project {
+  return {
+    id: p.slug || p.id,
+    name: p.name,
+    locality: p.locality,
+    city: p.city || "Visakhapatnam",
+    images:
+      p.images && p.images.length > 0
+        ? p.images
+        : ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80"],
+    bhks:
+      p.bhks && p.bhks.length > 0
+        ? p.bhks
+        : (p.configurations?.map((c) => c.label) ?? ["2 BHK", "3 BHK"]),
+    priceMin: p.priceMin,
+    priceMax: p.priceMax,
+    collection: (p.collections?.[0] as ProjectCollection) || "topPicks",
+    badge: p.badge,
+  };
+}
+
+export function repoToDetail(repo: RepoProject): ProjectDetail {
+  let staticDetail: ProjectDetail | undefined;
+  try {
+    staticDetail = getProjectDetail(repo.slug || repo.id);
+  } catch {
+    staticDetail = undefined;
+  }
+
+  return {
+    about: repo.description || staticDetail?.about || "Premium residential project developed by Sri Vasishta Constructions.",
+    developer: repo.developer || staticDetail?.developer || "Sri Vasishta Constructions",
+    pricePerSqft: repo.pricePerSqft || staticDetail?.pricePerSqft || 5000,
+    carpetMin: repo.carpetMin || staticDetail?.carpetMin || 1100,
+    carpetMax: repo.carpetMax || staticDetail?.carpetMax || 2400,
+    landAreaAcres: repo.landAreaAcres || staticDetail?.landAreaAcres || 2.5,
+    towers: repo.towers || staticDetail?.towers || 2,
+    totalUnits: repo.totalUnits || staticDetail?.totalUnits || 80,
+    launchDate: repo.launchDate || staticDetail?.launchDate || "2024",
+    possessionDate: repo.possessionDate || staticDetail?.possessionDate || "Ready to Move",
+    reraId: repo.reraId || staticDetail?.reraId || "P03290010123",
+    highlights: repo.highlights?.length ? repo.highlights : (staticDetail?.highlights ?? ["RERA & VMRDA Approved", "100% Vaastu Compliant", "Prime Location"]),
+    configurations: repo.configurations?.length ? repo.configurations : (staticDetail?.configurations ?? []),
+    floorPlans: staticDetail?.floorPlans ?? [],
+    amenities: repo.amenities?.length ? repo.amenities : (staticDetail?.amenities ?? []),
+    localityPricePerSqft: repo.localityPricePerSqft || staticDetail?.localityPricePerSqft || 5000,
+    localityPriceTrend: repo.localityPriceTrend || staticDetail?.localityPriceTrend || 8.5,
+    nearby: repo.nearby?.length ? repo.nearby : (staticDetail?.nearby ?? []),
+    faq: repo.faqs?.length ? repo.faqs : (staticDetail?.faq ?? []),
+    gallery: repo.images?.length > 1 ? repo.images : (staticDetail?.gallery ?? repo.images),
+    brochureUrl: repo.brochureUrl || staticDetail?.brochureUrl,
+    brochurePreview: repo.brochurePreview || staticDetail?.brochurePreview,
+    specifications: repo.specifications?.length ? repo.specifications : staticDetail?.specifications,
+    ratings: staticDetail?.ratings,
+    reviews: staticDetail?.reviews,
+    qa: staticDetail?.qa,
+  };
 }
