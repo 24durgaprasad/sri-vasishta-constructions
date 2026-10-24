@@ -149,9 +149,15 @@ function mongoToRepo(doc: unknown): RepoProject {
 
 export async function getAllProjects(): Promise<RepoProject[]> {
   if (isMongoConfigured) {
-    await connectDB();
-    const docs = await ProjectModel.find({ published: true }).lean();
-    return docs.map((d) => mongoToRepo(d));
+    try {
+      await connectDB();
+      const docs = await ProjectModel.find({ published: true }).lean();
+      if (docs && docs.length > 0) {
+        return docs.map((d) => mongoToRepo(d));
+      }
+    } catch (err) {
+      console.warn("MongoDB connection warning in getAllProjects:", (err as Error).message);
+    }
   }
   // Local store fallback — if store has data, use it; otherwise use static seed
   const stored = await readStore<RepoProject[]>("projects", []);
@@ -161,9 +167,15 @@ export async function getAllProjects(): Promise<RepoProject[]> {
 
 export async function getAllProjectsAdmin(): Promise<RepoProject[]> {
   if (isMongoConfigured) {
-    await connectDB();
-    const docs = await ProjectModel.find({}).lean();
-    return docs.map((d) => mongoToRepo(d));
+    try {
+      await connectDB();
+      const docs = await ProjectModel.find({}).lean();
+      if (docs && docs.length > 0) {
+        return docs.map((d) => mongoToRepo(d));
+      }
+    } catch (err) {
+      console.warn("MongoDB connection warning in getAllProjectsAdmin:", (err as Error).message);
+    }
   }
   const stored = await readStore<RepoProject[]>("projects", []);
   if (stored.length > 0) return stored;
@@ -172,30 +184,33 @@ export async function getAllProjectsAdmin(): Promise<RepoProject[]> {
 
 export async function getProjectBySlug(slug: string): Promise<RepoProject | null> {
   if (isMongoConfigured) {
-    await connectDB();
-    const target = slugify(slug);
+    try {
+      await connectDB();
+      const target = slugify(slug);
 
-    // 1. Try direct match on slug
-    let doc = await ProjectModel.findOne({ slug, published: true });
-    if (!doc && target !== slug) {
-      doc = await ProjectModel.findOne({ slug: target, published: true });
+      // 1. Try direct match on slug
+      let doc = await ProjectModel.findOne({ slug, published: true });
+      if (!doc && target !== slug) {
+        doc = await ProjectModel.findOne({ slug: target, published: true });
+      }
+
+      // 2. If not found by slug, search all published projects by slugified name or ID
+      if (!doc) {
+        const all = await ProjectModel.find({ published: true });
+        doc =
+          all.find(
+            (d) =>
+              slugify(d.slug || "") === target ||
+              slugify(d.name || "") === target ||
+              d.slug === slug ||
+              String(d._id) === slug
+          ) ?? null;
+      }
+
+      if (doc) return mongoToRepo(doc);
+    } catch (err) {
+      console.warn("MongoDB connection warning in getProjectBySlug:", (err as Error).message);
     }
-
-    // 2. If not found by slug, search all published projects by slugified name or ID
-    if (!doc) {
-      const all = await ProjectModel.find({ published: true });
-      doc =
-        all.find(
-          (d) =>
-            slugify(d.slug || "") === target ||
-            slugify(d.name || "") === target ||
-            d.slug === slug ||
-            String(d._id) === slug
-        ) ?? null;
-    }
-
-    if (!doc) return null;
-    return mongoToRepo(doc);
   }
   const all = await getAllProjects();
   const target = slugify(slug);
@@ -212,28 +227,31 @@ export async function getProjectBySlug(slug: string): Promise<RepoProject | null
 
 export async function getProjectBySlugAdmin(slug: string): Promise<RepoProject | null> {
   if (isMongoConfigured) {
-    await connectDB();
-    const target = slugify(slug);
+    try {
+      await connectDB();
+      const target = slugify(slug);
 
-    let doc = await ProjectModel.findOne({ slug });
-    if (!doc && target !== slug) {
-      doc = await ProjectModel.findOne({ slug: target });
+      let doc = await ProjectModel.findOne({ slug });
+      if (!doc && target !== slug) {
+        doc = await ProjectModel.findOne({ slug: target });
+      }
+
+      if (!doc) {
+        const all = await ProjectModel.find({});
+        doc =
+          all.find(
+            (d) =>
+              slugify(d.slug || "") === target ||
+              slugify(d.name || "") === target ||
+              d.slug === slug ||
+              String(d._id) === slug
+          ) ?? null;
+      }
+
+      if (doc) return mongoToRepo(doc);
+    } catch (err) {
+      console.warn("MongoDB connection warning in getProjectBySlugAdmin:", (err as Error).message);
     }
-
-    if (!doc) {
-      const all = await ProjectModel.find({});
-      doc =
-        all.find(
-          (d) =>
-            slugify(d.slug || "") === target ||
-            slugify(d.name || "") === target ||
-            d.slug === slug ||
-            String(d._id) === slug
-        ) ?? null;
-    }
-
-    if (!doc) return null;
-    return mongoToRepo(doc);
   }
   const all = await getAllProjectsAdmin();
   const target = slugify(slug);

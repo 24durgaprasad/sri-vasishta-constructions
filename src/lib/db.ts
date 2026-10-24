@@ -13,6 +13,7 @@ export async function connectDB(): Promise<typeof mongoose> {
 
   const opts: mongoose.ConnectOptions = {
     bufferCommands: false,
+    serverSelectionTimeoutMS: 5000,
   };
 
   global._mongooseConn = mongoose.connect(MONGODB_URI, opts);

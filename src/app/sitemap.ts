@@ -4,7 +4,12 @@ import { slugify } from "@/lib/format";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://vasishtaconstructions.com";
-  const projects = await getAllProjects();
+  let projects: Awaited<ReturnType<typeof getAllProjects>> = [];
+  try {
+    projects = await getAllProjects();
+  } catch {
+    projects = [];
+  }
 
   const staticRoutes = [
     "",

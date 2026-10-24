@@ -42,19 +42,25 @@ function staticPartnersToRepo(): RepoPartner[] {
 
 export async function getAllPartners(): Promise<RepoPartner[]> {
   if (isMongoConfigured) {
-    await connectDB();
-    const docs = await PartnerModel.find({}).sort({ order: 1 }).lean();
-    return docs.map((d) => ({
-      id: String(d._id),
-      name: d.name ?? "",
-      category: d.category ?? "bank",
-      logo: d.logo,
-      logoSrc: d.logoSrc,
-      url: d.url,
-      description: d.description,
-      featured: Boolean(d.featured),
-      order: Number(d.order ?? 0),
-    }));
+    try {
+      await connectDB();
+      const docs = await PartnerModel.find({}).sort({ order: 1 }).lean();
+      if (docs && docs.length > 0) {
+        return docs.map((d) => ({
+          id: String(d._id),
+          name: d.name ?? "",
+          category: d.category ?? "bank",
+          logo: d.logo,
+          logoSrc: d.logoSrc,
+          url: d.url,
+          description: d.description,
+          featured: Boolean(d.featured),
+          order: Number(d.order ?? 0),
+        }));
+      }
+    } catch (err) {
+      console.warn("MongoDB connection warning in getAllPartners:", (err as Error).message);
+    }
   }
   const stored = await readStore<RepoPartner[]>("partners", []);
   return stored.length > 0 ? stored : staticPartnersToRepo();
