@@ -1,163 +1,97 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import Image from "next/image";
-import { formatPrice } from "@/lib/format";
+import { Carousel } from "@/components/ui/Carousel";
+import { ProjectCard } from "./ProjectCard";
 import { projectsBy } from "@/data/projects";
 
+const filterTabs = [
+  { id: "all", label: "All Properties" },
+  { id: "flats", label: "Flats & Apartments" },
+  { id: "villas", label: "Houses & Villas" },
+  { id: "plots", label: "Plots & Land" },
+];
+
 export function TopPicks() {
-  const items = projectsBy("topPicks");
-  const [activeIdx, setActiveIdx] = useState(0);
-  const prefersReduced = useReducedMotion();
+  const [activeTab, setActiveTab] = useState("all");
+  const allItems = projectsBy("topPicks");
 
-  const featured = items[activeIdx];
-  const side = [
-    items[(activeIdx + 1) % items.length],
-    items[(activeIdx + 2) % items.length],
-  ];
+  const filteredItems = allItems.filter((p) => {
+    if (activeTab === "flats") return p.bhks.some((b) => b.includes("BHK"));
+    if (activeTab === "plots") return p.bhks.some((b) => b.toLowerCase().includes("plot") || p.name.toLowerCase().includes("plot"));
+    if (activeTab === "villas") return p.name.toLowerCase().includes("residence") || p.name.toLowerCase().includes("villa") || p.bhks.includes("4 BHK");
+    return true;
+  });
 
-  function prev() {
-    setActiveIdx((i) => (i - 1 + items.length) % items.length);
-  }
-  function next() {
-    setActiveIdx((i) => (i + 1) % items.length);
-  }
+  const displayItems = filteredItems.length > 0 ? filteredItems : allItems;
 
   return (
-    <section aria-labelledby="top-picks-heading" className="section-gap bg-white">
+    <section aria-labelledby="top-picks-heading" className="bg-slate-50/70 py-16 lg:py-24">
       <div className="shell">
-        {/* Header row */}
-        <div className="mb-10 flex items-end justify-between">
-          <div>
-            <p className="eyebrow mb-3 text-brand-500">Top Picks</p>
-            <h2 id="top-picks-heading" className="display-lg text-navy-950">
-              Homes our buyers<br />love most
-            </h2>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="eyebrow text-navy-400">
-              {String(activeIdx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+        {/* Section Header */}
+        <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-brand-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-brand-700">
+              <span className="size-1.5 rounded-full bg-brand-500" />
+              Handpicked Living
             </span>
-            <div className="flex gap-2">
-              <button
-                onClick={prev}
-                aria-label="Previous"
-                className="grid size-11 place-items-center rounded-full border border-navy-200 transition-all hover:border-navy-900 hover:bg-navy-900 hover:text-white"
-              >
-                <svg viewBox="0 0 20 20" fill="none" className="size-4">
-                  <path
-                    d="M13 4l-6 6 6 6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={next}
-                aria-label="Next"
-                className="grid size-11 place-items-center rounded-full border border-navy-200 transition-all hover:border-navy-900 hover:bg-navy-900 hover:text-white"
-              >
-                <svg viewBox="0 0 20 20" fill="none" className="size-4">
-                  <path
-                    d="M7 4l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
+            <h2 id="top-picks-heading" className="mt-3 text-3xl font-extrabold tracking-tight text-navy-950 sm:text-4xl">
+              Featured Properties
+            </h2>
+            <p className="mt-2 text-base text-navy-600">
+              Explore the most desirable residential and commercial developments across Visakhapatnam.
+            </p>
           </div>
+
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-2 text-sm font-bold text-navy-900 transition-colors hover:text-brand-600"
+          >
+            <span>View All Projects</span>
+            <svg viewBox="0 0 20 20" fill="none" className="size-4">
+              <path
+                d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Link>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
-          {/* Featured card */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={featured.id}
-              initial={prefersReduced ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
+        {/* Filter Pills */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          {filterTabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`rounded-full px-5 py-2 text-xs font-bold transition-all sm:text-sm ${
+                activeTab === tab.id
+                  ? "bg-navy-950 text-white shadow-sm"
+                  : "bg-white text-navy-700 border border-navy-100 hover:border-navy-300 hover:bg-navy-50"
+              }`}
             >
-              <Link
-                href={`/projects/${featured.id}`}
-                className="group relative block aspect-[4/3] overflow-hidden rounded-2xl lg:aspect-[16/11]"
-              >
-                <Image
-                  src={featured.images[0]}
-                  alt={featured.name}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 65vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                {/* Badge */}
-                {featured.badge && (
-                  <span className="eyebrow absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-navy-900 backdrop-blur">
-                    {featured.badge}
-                  </span>
-                )}
-                {/* Footer overlay */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-navy-950/90 via-navy-950/40 to-transparent p-6 lg:p-8">
-                  <p className="eyebrow mb-2 text-brand-400">
-                    {featured.locality} · {featured.bhks.join(", ")}
-                  </p>
-                  <h3 className="mb-1 text-xl font-bold text-white lg:text-2xl">
-                    {featured.name}
-                  </h3>
-                  <p className="text-sm text-navy-200">
-                    {formatPrice(featured.priceMin)} – {formatPrice(featured.priceMax)}
-                  </p>
-                  <span className="eyebrow mt-4 inline-flex items-center gap-2 text-brand-400 transition-all group-hover:gap-3">
-                    View Project
-                    <svg viewBox="0 0 16 16" fill="none" className="size-3.5">
-                      <path
-                        d="M3 8h10M9 4l4 4-4 4"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Two stacked side cards */}
-          <div className="hidden flex-col gap-4 lg:flex">
-            {side.map((project) => (
-              <Link
-                key={project.id}
-                href={`/projects/${project.id}`}
-                className="group relative min-h-0 flex-1 overflow-hidden rounded-2xl"
-              >
-                <Image
-                  src={project.images[0]}
-                  alt={project.name}
-                  fill
-                  sizes="320px"
-                  className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/20 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-4">
-                  <p className="eyebrow mb-1 text-navy-300">{project.locality}</p>
-                  <p className="text-sm font-semibold text-white">{project.name}</p>
-                  <p className="mt-0.5 text-xs text-navy-300">
-                    {formatPrice(project.priceMin)} – {formatPrice(project.priceMax)}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {/* Carousel / Cards Grid */}
+        <Carousel
+          label="Featured properties"
+          options={{ slidesToScroll: 1, breakpoints: { 640: { slidesToScroll: 2 }, 1024: { slidesToScroll: 3 } } }}
+        >
+          {displayItems.map((project) => (
+            <div
+              key={project.id}
+              className="min-w-0 flex-[0_0_88%] sm:flex-[0_0_48%] lg:flex-[0_0_32%]"
+            >
+              <ProjectCard project={project} />
+            </div>
+          ))}
+        </Carousel>
       </div>
     </section>
   );

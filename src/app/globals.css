@@ -95,30 +95,35 @@
 
   /* ── Display type utilities ── */
   .display-2xl {
-    font-family: var(--font-display);
-    font-size: clamp(4rem, 10vw, 8rem);
-    font-weight: 700;
-    font-style: italic;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-  }
-
-  .display-xl {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 7vw, 5.5rem);
-    font-weight: 700;
-    font-style: italic;
-    line-height: 1.05;
+    font-family: var(--font-sans);
+    font-size: clamp(2.5rem, 5.5vw, 4rem);
+    font-weight: 800;
+    font-style: normal;
+    line-height: 1.1;
     letter-spacing: -0.025em;
   }
 
-  .display-lg {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 600;
-    font-style: italic;
-    line-height: 1.1;
+  .display-xl {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1.15;
     letter-spacing: -0.02em;
+  }
+
+  .display-lg {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    font-style: normal;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .display-serif {
+    font-family: var(--font-display);
+    font-style: italic;
   }
 
   .eyebrow {

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "./Logo";
 import { footerColumns, site } from "@/data/site";
 
 const socials = [
@@ -26,42 +27,42 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-navy-200">
-      <div className="shell pt-20 pb-8 lg:pt-28 lg:pb-10">
-        {/* Main grid: company name + nav columns */}
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_1.6fr]">
-          {/* Left: Large editorial company name */}
+    <footer className="border-t border-navy-900 bg-navy-950 text-navy-200">
+      <div className="shell pt-16 pb-10 lg:pt-20 lg:pb-12">
+        {/* Main 4-column layout */}
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+          {/* Brand info */}
           <div>
-            <p className="eyebrow mb-4 text-brand-400">Since 2012</p>
-            <h2
-              className="font-display font-bold italic text-white"
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
-                lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-              }}
-            >
-              Sri Vasishta<br />Constructions
-            </h2>
-            <p className="mt-6 max-w-xs text-sm leading-relaxed text-navy-400">
-              {site.tagline}. RERA-approved properties across Visakhapatnam.
+            <div className="[&_span]:!text-white">
+              <Logo variant="onHero" />
+            </div>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-navy-400">
+              Sri Vasishta Constructions brings over 12+ years of excellence developing RERA-approved gated communities, luxury villas, approved plots, and commercial landmarks in Visakhapatnam.
             </p>
 
+            <div className="mt-6 flex items-center gap-3">
+              <span className="rounded-full bg-navy-900 border border-navy-800 px-3 py-1 text-xs font-semibold text-brand-400">
+                RERA: {site.rera}
+              </span>
+              <span className="rounded-full bg-navy-900 border border-navy-800 px-3 py-1 text-xs font-semibold text-navy-300">
+                ISO Certified
+              </span>
+            </div>
+
             {/* Social icons */}
-            <ul className="mt-8 flex gap-3">
+            <ul className="mt-6 flex gap-2.5">
               {socials.map((social) => (
                 <li key={social.id}>
                   <a
                     href="#"
                     aria-label={social.label}
-                    className="grid size-10 place-items-center rounded-lg border border-navy-800 bg-navy-900 text-navy-200 transition hover:border-brand-500 hover:text-brand-400"
+                    className="grid size-9 place-items-center rounded-lg border border-navy-800 bg-navy-900 text-navy-400 transition hover:border-brand-500 hover:text-white"
                   >
                     <svg
                       aria-hidden="true"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      className="size-5"
+                      className="size-4"
                     >
                       <path d={social.path} />
                     </svg>
@@ -71,82 +72,112 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Right: nav columns grid */}
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {footerColumns.map((col) => (
-              <div key={col.id}>
-                <h3 className="eyebrow mb-5 text-brand-400">{col.title}</h3>
-                <ul className="space-y-3">
-                  {col.links.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="text-sm text-navy-400 transition-colors hover:text-white"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+          {/* Nav column 1: Properties */}
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400">
+              Properties
+            </h3>
+            <ul className="mt-4 space-y-2.5">
+              {footerColumns[0]?.links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-navy-400 transition hover:text-white"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {/* Get in touch */}
-            <div>
-              <h3 className="eyebrow mb-5 text-brand-400">Get in touch</h3>
-              <ul className="space-y-3 text-sm text-navy-400">
-                {site.phones.map((phone) => (
-                  <li key={phone}>
-                    <a
-                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                      className="transition-colors hover:text-white"
-                    >
-                      {phone}
-                    </a>
-                  </li>
-                ))}
-                <li>
-                  <a
-                    href={`mailto:${site.email}`}
-                    className="break-all transition-colors hover:text-white"
+          {/* Nav column 2: Services / Tools */}
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400">
+              Tools &amp; Services
+            </h3>
+            <ul className="mt-4 space-y-2.5">
+              {footerColumns[1]?.links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-navy-400 transition hover:text-white"
                   >
-                    {site.email}
-                  </a>
+                    {link.label}
+                  </Link>
                 </li>
-                <li className="leading-relaxed">
-                  {site.officeAddress.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                </li>
-                <li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact info column */}
+          <div>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400">
+              Corporate Office
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm text-navy-400">
+              {site.phones.map((phone) => (
+                <li key={phone}>
                   <a
-                    href={site.whatsapp}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 transition-colors hover:text-white"
+                    href={`tel:${phone.replace(/[^\d+]/g, "")}`}
+                    className="flex items-center gap-2 font-medium text-white transition hover:text-brand-400"
                   >
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-4 shrink-0"
-                    >
-                      <path d="M12 4a8 8 0 0 0-6.9 12l-1 3.5 3.6-1A8 8 0 1 0 12 4Zm4.5 11.3c-.2.6-1.2 1.1-1.7 1.1-.5.1-1 .2-3.2-.7-2.7-1.1-4.4-4-4.5-4.1-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.4-.3.3c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1.9 1.9 1.2 2.2 1.4.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l2.1 1c.3.2.5.2.6.4.1.1.1.6-.2 1.2Z" />
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="size-4 text-brand-500">
+                      <path d="M2 3a1 1 0 0 1 1-1h2.153a1 1 0 0 1 .986.836l.74 4.435a1 1 0 0 1-.54 1.06l-1.548.773a11.037 11.037 0 0 0 6.105 6.105l.774-1.548a1 1 0 0 1 1.059-.54l4.435.74a1 1 0 0 1 .836.986V17a1 1 0 0 1-1 1h-2C7.82 18 2 12.18 2 4V3Z"/>
                     </svg>
-                    Chat on WhatsApp
+                    <span>{phone}</span>
                   </a>
                 </li>
-              </ul>
-            </div>
+              ))}
+
+              <li>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="flex items-center gap-2 break-all text-navy-300 transition hover:text-white"
+                >
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="size-4 shrink-0 text-navy-400">
+                    <path d="M3 4a2 2 0 0 0-2 2v1.161l8.441 4.221a1.25 1.25 0 0 0 1.118 0L19 7.162V6a2 2 0 0 0-2-2H3Z"/>
+                    <path d="m19 8.839-7.77 3.885a2.75 2.75 0 0 1-2.46 0L1 8.839V14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.839Z"/>
+                  </svg>
+                  <span>{site.email}</span>
+                </a>
+              </li>
+
+              <li className="leading-relaxed text-xs text-navy-400 pt-1">
+                {site.officeAddress.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </li>
+
+              <li className="pt-2">
+                <a
+                  href={site.whatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-emerald-500"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                    <path d="M12 4a8 8 0 0 0-6.9 12l-1 3.5 3.6-1A8 8 0 1 0 12 4Zm4.5 11.3c-.2.6-1.2 1.1-1.7 1.1-.5.1-1 .2-3.2-.7-2.7-1.1-4.4-4-4.5-4.1-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.4-.3.3c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1.9 1.9 1.2 2.2 1.4.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l2.1 1c.3.2.5.2.6.4.1.1.1.6-.2 1.2Z" />
+                  </svg>
+                  Chat with Property Advisor
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 flex flex-col gap-3 border-t border-navy-800 pt-6 text-xs text-navy-500 sm:flex-row sm:items-center sm:justify-between">
+        {/* Bottom copyright row */}
+        <div className="mt-14 flex flex-col gap-4 border-t border-navy-900 pt-6 text-xs text-navy-500 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
-          <p>RERA No. {site.rera} · Designed and built in Visakhapatnam</p>
+          <p className="flex items-center gap-3">
+            <Link href="/legal/privacy" className="hover:text-navy-300">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/legal/terms" className="hover:text-navy-300">Terms of Service</Link>
+            <span>•</span>
+            <span>RERA Registered AP00005123</span>
+          </p>
         </div>
       </div>
     </footer>

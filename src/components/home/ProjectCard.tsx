@@ -2,81 +2,114 @@ import Link from "next/link";
 import type { Project } from "@/data/types";
 import { priceRangeLabel, projectHref } from "@/lib/format";
 import { CardCarousel } from "./CardCarousel";
-import { FinanceBadges } from "./FinanceBadges";
 
 export function ProjectCard({ project }: { project: Project }) {
   const href = projectHref(project.name);
+
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-navy-100 bg-white shadow-card transition hover:-translate-y-1 hover:shadow-card-hover">
-      <div className="relative z-20 aspect-[4/3] w-full shrink-0">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+      {/* Property Image & Slider */}
+      <div className="relative z-20 aspect-[16/11] w-full shrink-0 overflow-hidden bg-navy-50">
         <CardCarousel
-          images={project.images.slice(0, 3)}
+          images={project.images.slice(0, 4)}
           alt={`${project.name}, ${project.locality}`}
           sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
         />
-        {project.badge ? (
-          <span className="absolute left-3 top-3 rounded-full bg-navy-950/85 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-white backdrop-blur-sm sm:text-[0.65rem]">
-            {project.badge}
+
+        {/* Status / Feature Badges */}
+        <div className="pointer-events-none absolute left-3 top-3 z-30 flex flex-wrap gap-1.5">
+          {project.badge ? (
+            <span className="rounded-full bg-brand-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow-sm">
+              {project.badge}
+            </span>
+          ) : (
+            <span className="rounded-full bg-navy-900/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+              Verified
+            </span>
+          )}
+        </div>
+
+        <div className="pointer-events-none absolute right-3 top-3 z-30">
+          <span className="rounded-full bg-navy-950/75 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+            {project.city}
           </span>
-        ) : null}
+        </div>
       </div>
 
-      <div className="flex w-full min-w-0 flex-1 flex-col justify-between gap-3 bg-navy-900 p-4 text-white sm:p-5">
-        <div className="min-w-0">
-          <p
-            className="block truncate text-lg font-semibold leading-tight group-hover:text-brand-400"
+      {/* Property Info */}
+      <div className="flex flex-1 flex-col justify-between p-5">
+        <div>
+          {/* Locality */}
+          <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-brand-600">
+            <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-3.5 shrink-0">
+              <path
+                d="M10 18s6-5.5 6-9.5A6 6 0 0 0 4 8.5C4 12.5 10 18 10 18Z"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              />
+              <circle cx="10" cy="8.5" r="2" stroke="currentColor" strokeWidth="1.75" />
+            </svg>
+            <span className="truncate">{project.locality}</span>
+          </div>
+
+          {/* Title */}
+          <h3
+            className="mt-1.5 truncate text-lg font-bold text-navy-950 transition-colors group-hover:text-brand-600"
             title={project.name}
           >
             {project.name}
-          </p>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-navy-300">
-            <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4 shrink-0">
-              <path d="M10 18s6-5.5 6-9.5A6 6 0 0 0 4 8.5C4 12.5 10 18 10 18Z" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="10" cy="8.5" r="2" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-            <span className="min-w-0 truncate">
-              {project.locality}, {project.city}
-            </span>
-          </p>
+          </h3>
 
-          <div className="mt-2.5">
-            <p className="text-[11px] uppercase tracking-wider text-navy-400">
-              Available
-            </p>
-            <div className="mt-1 flex flex-wrap items-center gap-1.5">
-              <ul className="flex flex-wrap gap-1.5">
-                {project.bhks.slice(0, 3).map((bhk) => (
-                  <li
-                    key={bhk}
-                    className="whitespace-nowrap rounded-md border border-navy-700 px-2 py-0.5 text-xs font-medium text-navy-200"
-                  >
-                    {bhk}
-                  </li>
-                ))}
-                {project.bhks.length > 3 ? (
-                  <li className="whitespace-nowrap rounded-md border border-navy-700 px-2 py-0.5 text-xs font-medium text-navy-400">
-                    +{project.bhks.length - 3}
-                  </li>
-                ) : null}
-              </ul>
-              <FinanceBadges tone="outline-navy" />
+          {/* Key Specs */}
+          <div className="mt-3.5 flex flex-wrap items-center gap-2 border-y border-navy-100/80 py-3 text-xs text-navy-600">
+            {/* BHK pills */}
+            <div className="flex items-center gap-1.5 font-medium">
+              <svg aria-hidden="true" viewBox="0 0 20 20" fill="none" className="size-4 text-navy-400">
+                <path
+                  d="M3 13V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v5M3 15h14M6 10h8"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span>{project.bhks.join(", ")}</span>
             </div>
-          </div>
 
-          <div className="mt-2.5">
-            <p className="text-[11px] uppercase tracking-wider text-navy-400">
-              Price range
-            </p>
-            <p className="mt-0.5 whitespace-nowrap text-base font-bold text-brand-400">
-              {priceRangeLabel(project.priceMin, project.priceMax)}
-            </p>
+            <span className="text-navy-300">•</span>
+
+            <div className="flex items-center gap-1 text-navy-500">
+              <span className="rounded bg-navy-50 px-2 py-0.5 font-medium text-navy-700">
+                Loan Available
+              </span>
+            </div>
           </div>
         </div>
 
-        <span className="inline-flex min-h-11 items-center justify-center rounded-full border border-navy-600 px-4 py-2 text-center text-sm font-semibold text-navy-100 transition group-hover:border-brand-400 group-hover:text-brand-400">
-          View details
-        </span>
+        {/* Bottom Price & Action */}
+        <div className="mt-4 flex items-center justify-between pt-1">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-navy-400">
+              Price Range
+            </p>
+            <p className="text-lg font-extrabold text-navy-950 sm:text-xl">
+              {priceRangeLabel(project.priceMin, project.priceMax)}
+            </p>
+          </div>
+
+          <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-navy-50 text-navy-800 transition-all duration-300 group-hover:bg-brand-500 group-hover:text-white group-hover:shadow-md">
+            <svg viewBox="0 0 20 20" fill="none" className="size-4">
+              <path
+                d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
+
       <Link
         href={href}
         className="absolute inset-0 z-10"

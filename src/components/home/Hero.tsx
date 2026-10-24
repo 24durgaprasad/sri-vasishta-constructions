@@ -66,166 +66,149 @@ export function Hero() {
   };
 
   return (
-    <section className="relative isolate min-h-screen bg-navy-950 overflow-hidden">
-      {/* LEFT column — 55% — editorial copy */}
-      <div className="relative z-10 flex min-h-screen flex-col justify-between px-6 pt-24 pb-10 sm:px-8 lg:absolute lg:inset-y-0 lg:left-0 lg:w-[55%] lg:px-16 lg:py-12 lg:min-h-full">
-        {/* Top spacer for fixed header */}
-        <div className="h-4 lg:h-10" />
+    <section className="relative isolate overflow-hidden bg-navy-950">
+      {/* Background image */}
+      <Image
+        src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=70"
+        alt="Modern apartment building facade at dusk"
+        fill
+        priority
+        sizes="100vw"
+        className="-z-10 object-cover object-center"
+      />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-navy-950/70 via-navy-950/55 to-navy-950/85" />
 
-        {/* Editorial content + search */}
-        <div className="flex-1 flex flex-col justify-center py-6">
-          <p className="eyebrow text-brand-400 mb-6">Now booking · Visakhapatnam</p>
+      <div className="shell pt-32 pb-16 lg:pt-40 lg:pb-24">
+        <div className="max-w-3xl">
+          {/* Badge */}
+          <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-medium tracking-wide text-white backdrop-blur-sm">
+            <span className="size-1.5 rounded-full bg-brand-400" />
+            Now booking in Visakhapatnam
+          </p>
 
-          <h1 className="display-2xl text-white mb-6">
-            Find a home<br />
-            that fits<br />
-            <em className="text-brand-400 not-italic">how you live</em>
+          {/* Headline */}
+          <h1 className="mt-6 text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+            Find a home that fits{" "}
+            <span className="text-brand-400">how you live</span>
           </h1>
 
-          <p className="text-navy-300 text-base sm:text-lg leading-relaxed max-w-lg mb-8">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-navy-200 sm:text-lg">
             RERA-approved flats, villas, plots and commercial spaces from
             Sri Vasishta Constructions, with honest pricing and clean handover.
           </p>
+        </div>
 
-          {/* Search container */}
-          <div className="max-w-xl">
-            {/* Intent tabs */}
-            <div
-              role="tablist"
-              aria-label="What are you looking for"
-              className="no-scrollbar flex snap-x snap-mandatory flex-nowrap gap-1 overflow-x-auto rounded-xl bg-white/10 p-1 backdrop-blur-md sm:grid sm:grid-cols-4 sm:overflow-visible sm:rounded-full"
-            >
-              {intents.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={intent === item.id}
-                  onClick={(event) => {
-                    setIntent(item.id);
-                    setActiveChips([]);
-                    setSubmitted(null);
-                    event.currentTarget.scrollIntoView({
-                      inline: "center",
-                      block: "nearest",
-                      behavior: "smooth",
-                    });
-                  }}
-                  className={`min-h-10 flex-none snap-start whitespace-nowrap rounded-lg px-3.5 py-2 text-[13px] font-semibold transition sm:w-full sm:min-w-0 sm:rounded-full sm:px-4 sm:text-sm ${
-                    intent === item.id
-                      ? "bg-brand-500 text-white shadow-sm"
-                      : "text-white/70 hover:text-white"
-                  }`}
+        {/* Search card */}
+        <div className="mt-10 max-w-4xl rounded-2xl bg-white p-4 shadow-xl sm:p-5">
+          {/* Intent tabs */}
+          <div
+            role="tablist"
+            aria-label="What are you looking for"
+            className="no-scrollbar flex snap-x snap-mandatory flex-nowrap gap-1 overflow-x-auto rounded-2xl bg-navy-50 p-1 sm:grid sm:grid-cols-4 sm:overflow-visible sm:rounded-full"
+          >
+            {intents.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={intent === item.id}
+                onClick={(event) => {
+                  setIntent(item.id);
+                  setActiveChips([]);
+                  setSubmitted(null);
+                  event.currentTarget.scrollIntoView({
+                    inline: "center",
+                    block: "nearest",
+                    behavior: "smooth",
+                  });
+                }}
+                className={`min-h-11 flex-none snap-start whitespace-nowrap rounded-xl px-4 py-2.5 text-[13px] font-semibold transition sm:w-full sm:min-w-0 sm:rounded-full sm:px-5 sm:text-sm ${
+                  intent === item.id
+                    ? "bg-navy-900 text-white shadow-sm"
+                    : "text-navy-500 hover:text-navy-800"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Search input */}
+          <form onSubmit={onSubmit} className="mt-4">
+            <div className="flex flex-col gap-2.5 sm:flex-row">
+              <div className="relative flex-1">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-navy-400"
                 >
-                  {item.label}
-                </button>
-              ))}
+                  <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.75" />
+                  <path d="m14 14 3 3" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                </svg>
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setSubmitted(null);
+                  }}
+                  placeholder={placeholder[intent]}
+                  aria-label={placeholder[intent]}
+                  className="h-12 w-full rounded-xl border border-navy-200 bg-white pl-11 pr-4 text-sm text-navy-800 placeholder:text-navy-400 focus:border-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400/20 sm:text-base"
+                />
+              </div>
+              <button type="submit" className="btn-primary h-12 rounded-full px-7 text-sm font-semibold">
+                Search
+              </button>
             </div>
 
-            {/* Search form */}
-            <form onSubmit={onSubmit} className="mt-4">
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-2.5 sm:p-3 flex flex-col gap-2.5 sm:flex-row">
-                <div className="relative flex-1">
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-white/50"
-                  >
-                    <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.75" />
-                    <path d="m14 14 3 3" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-                  </svg>
-                  <input
-                    type="search"
-                    value={query}
-                    onChange={(event) => {
-                      setQuery(event.target.value);
-                      setSubmitted(null);
-                    }}
-                    placeholder={placeholder[intent]}
-                    aria-label={placeholder[intent]}
-                    className="h-12 w-full rounded-xl bg-transparent pl-11 pr-4 text-sm sm:text-base text-white placeholder:text-white/50 focus:outline-none"
-                  />
-                </div>
-                <button type="submit" className="btn-primary h-12 rounded-full px-7 text-sm font-semibold">
-                  Search
-                </button>
-              </div>
+            {/* Chips */}
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {chips[intent].map((chip) => {
+                const isActive = activeChips.includes(chip);
+                return (
+                  <li key={chip}>
+                    <button
+                      type="button"
+                      aria-pressed={isActive}
+                      onClick={() => toggleChip(chip)}
+                      className={`min-h-11 rounded-full border px-3.5 py-2.5 text-sm font-medium transition sm:min-h-0 sm:py-1.5 sm:text-xs ${
+                        isActive
+                          ? "border-navy-900 bg-navy-900 text-white"
+                          : "border-navy-200 bg-white text-navy-600 hover:border-navy-400"
+                      }`}
+                    >
+                      {chip}
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
 
-              {/* Chips */}
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {chips[intent].map((chip) => {
-                  const isActive = activeChips.includes(chip);
-                  return (
-                    <li key={chip}>
-                      <button
-                        type="button"
-                        aria-pressed={isActive}
-                        onClick={() => toggleChip(chip)}
-                        className={`min-h-8 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
-                          isActive
-                            ? "border-brand-500 bg-brand-500 text-white"
-                            : "border-white/20 text-white/80 hover:border-white/40 hover:text-white"
-                        }`}
-                      >
-                        {chip}
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-
-              <p aria-live="polite" className="mt-2 min-h-5 text-xs text-navy-300">
-                {submitted ??
-                  `Browsing ${intentLabel[intent].toLowerCase()} listings${
-                    activeChips.length ? ` · ${activeChips.join(", ")}` : ""
-                  }`}
-              </p>
-            </form>
-          </div>
+            <p aria-live="polite" className="mt-3 min-h-5 text-xs text-navy-500">
+              {submitted ??
+                `Browsing ${intentLabel[intent].toLowerCase()} listings${
+                  activeChips.length ? ` · ${activeChips.join(", ")}` : ""
+                }`}
+            </p>
+          </form>
         </div>
 
-        {/* Stats row at bottom */}
-        <div className="flex flex-wrap gap-8 border-t border-white/10 pt-6">
-          <div>
-            <span className="text-3xl font-bold text-white">18+</span>
-            <p className="eyebrow text-navy-400 mt-1">Projects</p>
-          </div>
-          <div>
-            <span className="text-3xl font-bold text-white">5+</span>
-            <p className="eyebrow text-navy-400 mt-1">Localities</p>
-          </div>
-          <div>
-            <span className="text-3xl font-bold text-white">₹200Cr+</span>
-            <p className="eyebrow text-navy-400 mt-1">Delivered</p>
-          </div>
+        {/* Stats row */}
+        <div className="mt-10 flex flex-wrap gap-8 sm:gap-12">
+          {[
+            { value: "18+", label: "Projects" },
+            { value: "5+", label: "Localities" },
+            { value: "₹200Cr+", label: "Delivered" },
+            { value: "12+", label: "Years" },
+          ].map((stat) => (
+            <div key={stat.label}>
+              <p className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-navy-300 mt-1">{stat.label}</p>
+            </div>
+          ))}
         </div>
-      </div>
-
-      {/* RIGHT column — 45% — full-bleed image */}
-      <div className="hidden lg:block absolute inset-y-0 right-0 w-[47%]">
-        <Image
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=70"
-          alt="Modern apartment building facade at dusk"
-          fill
-          priority
-          sizes="50vw"
-          className="object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-950 via-navy-950/20 to-transparent" />
-      </div>
-
-      {/* Mobile: image behind everything */}
-      <div className="absolute inset-0 lg:hidden -z-10">
-        <Image
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2400&q=70"
-          alt="Modern apartment building facade at dusk"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-navy-950/85 backdrop-blur-[1px]" />
       </div>
     </section>
   );
