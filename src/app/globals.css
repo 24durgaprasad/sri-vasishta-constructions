@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system,
+  --font-sans: var(--font-sans-google, var(--font-geist, ui-sans-serif)), system-ui, -apple-system,
     "Segoe UI", sans-serif;
+  --font-display: var(--font-display-google, "Playfair Display", Georgia, serif);
 
   --color-navy-50: oklch(0.97 0.012 265);
   --color-navy-100: oklch(0.93 0.022 265);
@@ -91,6 +92,61 @@
       border-navy-200 bg-white px-5 py-2.5 text-sm font-semibold text-navy-800
       transition hover:border-navy-300 hover:bg-navy-50;
   }
+
+  /* ── Display type utilities ── */
+  .display-2xl {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+  }
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    font-style: italic;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+
+  .display-lg {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  /* ── Image mask / reveal ── */
+  .img-cover {
+    @apply relative overflow-hidden;
+  }
+  .img-cover img {
+    @apply h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)];
+  }
+  .img-cover:hover img {
+    @apply scale-[1.04];
+  }
+
+  /* ── Section rhythm ── */
+  .section-gap {
+    @apply py-20 lg:py-28;
+  }
+  .section-gap-sm {
+    @apply py-14 lg:py-20;
+  }
 }
 
 @utility no-scrollbar {
@@ -144,4 +200,17 @@
     animation: none;
     transform: none;
   }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

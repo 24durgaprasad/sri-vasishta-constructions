@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
+import { StatsBar } from "@/components/home/StatsBar";
 import { LocalityBar } from "@/components/home/LocalityBar";
 import { TopPicks } from "@/components/home/TopPicks";
 import { Highlighted } from "@/components/home/Highlighted";
@@ -21,6 +22,7 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <StatsBar />
         <LocalityBar />
         <TopPicks />
         <Highlighted />

@@ -1,45 +1,67 @@
-import { MarqueeRow } from "./MarqueeRow";
+import Image from "next/image";
 import { banks, interiorPartners } from "@/data/partners";
 
 export function Tieups() {
   return (
-    <section aria-labelledby="tieups-heading" className="py-14 lg:py-18">
-      <div className="shell space-y-10">
-        <div className="text-center">
-          <h2
-            id="tieups-heading"
-            className="text-2xl font-bold tracking-tight text-navy-900 sm:text-3xl"
-          >
-            Featured tie-ups
-          </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-navy-500">
-            Pre-approved home loans and vetted interior partners, so your
-            purchase and your interiors move on the same timeline.
+    <section className="section-gap-sm border-y border-navy-100 bg-white">
+      <div className="shell">
+        {/* Financing Partners */}
+        <div className="mb-14">
+          <p className="eyebrow mb-8 text-center text-navy-400">Financing Partners</p>
+          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
+            {banks.map((bank) => (
+              <div
+                key={bank.id}
+                className="group flex h-10 items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+              >
+                {bank.logoSrc ? (
+                  <Image
+                    src={bank.logoSrc}
+                    alt={bank.name}
+                    width={100}
+                    height={36}
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-sm font-bold tracking-wide text-navy-600">
+                    {bank.logo}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="mb-14 border-t border-navy-100" />
+
+        {/* Interior Partners */}
+        <div>
+          <p className="eyebrow mb-8 text-center text-navy-400">
+            Interior &amp; Lifestyle Partners
           </p>
-        </div>
-
-        <div>
-          <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-[0.18em] text-navy-500">
-            Banks
-          </h3>
-          <MarqueeRow
-            partners={banks}
-            direction="left"
-            label="Banking partners"
-            hrefBase="/partners/banks"
-          />
-        </div>
-
-        <div>
-          <h3 className="mb-4 text-center text-sm font-semibold uppercase tracking-[0.18em] text-navy-500">
-            Interiors
-          </h3>
-          <MarqueeRow
-            partners={interiorPartners}
-            direction="right"
-            label="Interior design partners"
-            hrefBase="/partners/interiors"
-          />
+          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-10">
+            {interiorPartners.map((p) => (
+              <div
+                key={p.id}
+                className="group flex h-10 items-center justify-center grayscale opacity-50 transition-all duration-300 hover:grayscale-0 hover:opacity-100"
+              >
+                {p.logoSrc ? (
+                  <Image
+                    src={p.logoSrc}
+                    alt={p.name}
+                    width={100}
+                    height={36}
+                    className="h-8 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-sm font-bold tracking-wide text-navy-600">
+                    {p.logo}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

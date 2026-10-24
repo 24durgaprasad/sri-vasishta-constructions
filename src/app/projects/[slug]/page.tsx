@@ -28,10 +28,15 @@ import { priceRangeLabel, slugify } from "@/lib/format";
 type Params = { params: Promise<{ slug: string }> };
 
 const findBySlug = (slug: string) =>
-  projects.find((project) => slugify(project.name) === slug);
+  projects.find(
+    (project) => project.id === slug || slugify(project.name) === slug,
+  );
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: slugify(project.name) }));
+  return [
+    ...projects.map((project) => ({ slug: slugify(project.name) })),
+    ...projects.map((project) => ({ slug: project.id })),
+  ];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {

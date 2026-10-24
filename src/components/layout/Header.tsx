@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import { NavDropdown } from "./NavDropdown";
 import { navGroups } from "@/data/nav";
 import { site } from "@/data/site";
 
 export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
+  const pathname = usePathname();
   const [openId, setOpenId] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(forceSolid);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -79,7 +81,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
     <>
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-          solid
+          mobileOpen
+            ? "border-b border-navy-800 bg-navy-950"
+            : solid
             ? "border-b border-navy-100 bg-white/95 backdrop-blur-md"
             : "border-b border-transparent bg-transparent"
         }`}
@@ -88,13 +92,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
           <a
             href="/"
             aria-label={site.name}
-            className="flex min-h-11 shrink-0 items-center sm:min-h-0"
+            className="flex min-h-11 shrink-0 items-center tracking-wide sm:min-h-0"
           >
-            <Logo variant={solid ? "solid" : "onHero"} />
+            <Logo variant={mobileOpen ? "onHero" : solid ? "solid" : "onHero"} />
           </a>
 
           <nav aria-label="Main" className="hidden lg:block">
-            <ul className="flex items-center gap-1">
+            <ul className="flex items-center gap-6">
               {navGroups.map((group) => (
                 <li key={group.id}>
                   <NavDropdown
@@ -110,10 +114,14 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
               <li>
                 <a
                   href="/projects"
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  className={`border-b-2 py-1 text-sm font-medium transition-colors ${
+                    pathname === "/projects"
+                      ? "border-brand-500"
+                      : "border-transparent hover:border-brand-500"
+                  } ${
                     solid
-                      ? "text-navy-700 hover:bg-navy-50 hover:text-navy-900"
-                      : "text-white/85 hover:bg-white/10 hover:text-white"
+                      ? "text-navy-700 hover:text-navy-900"
+                      : "text-white/85 hover:text-white"
                   }`}
                 >
                   Projects
@@ -122,10 +130,14 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
               <li>
                 <a
                   href="/about"
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  className={`border-b-2 py-1 text-sm font-medium transition-colors ${
+                    pathname === "/about"
+                      ? "border-brand-500"
+                      : "border-transparent hover:border-brand-500"
+                  } ${
                     solid
-                      ? "text-navy-700 hover:bg-navy-50 hover:text-navy-900"
-                      : "text-white/85 hover:bg-white/10 hover:text-white"
+                      ? "text-navy-700 hover:text-navy-900"
+                      : "text-white/85 hover:text-white"
                   }`}
                 >
                   About
@@ -261,7 +273,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
               className={
                 solid
                   ? "btn-primary"
-                  : "inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-navy-900 transition hover:bg-brand-400"
+                  : "inline-flex items-center justify-center gap-2 rounded-full border border-white/50 text-white backdrop-blur-sm px-5 py-2.5 text-sm font-semibold transition hover:bg-white hover:text-navy-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500"
               }
             >
               Book a visit
@@ -274,7 +286,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen((value) => !value)}
             className={`grid size-11 place-items-center rounded-xl border transition lg:hidden ${
-              solid
+              mobileOpen
+                ? "border-navy-700 bg-navy-900 text-white"
+                : solid
                 ? "border-navy-200 bg-white text-navy-900"
                 : "border-white/30 bg-navy-950/40 text-white backdrop-blur-sm"
             }`}
@@ -301,9 +315,9 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
       </header>
 
       {mobileOpen ? (
-        <div className="fixed inset-0 z-40 overflow-y-auto bg-white pt-24 lg:hidden">
-          <div className="shell space-y-6 pb-10">
-            <ul className="space-y-1 border-b border-navy-100 pb-4">
+        <div className="fixed inset-0 z-40 overflow-y-auto bg-navy-950 pt-28 lg:hidden">
+          <div className="shell space-y-8 pb-12">
+            <ul className="space-y-4 border-b border-navy-800 pb-6">
               {[
                 { label: "All projects", href: "/projects" },
                 { label: "Buy", href: "/buy" },
@@ -314,7 +328,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
                   <a
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-base font-semibold text-navy-900 transition hover:bg-navy-50"
+                    className="block text-3xl font-bold text-white transition hover:text-brand-400"
                   >
                     {link.label}
                   </a>
@@ -323,14 +337,14 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
             </ul>
 
             {navGroups.map((group) => (
-              <details key={group.id} className="border-b border-navy-100 pb-4">
-                <summary className="flex cursor-pointer items-center justify-between py-3 text-base font-semibold text-navy-900">
+              <details key={group.id} className="group border-b border-navy-800 pb-6">
+                <summary className="flex cursor-pointer items-center justify-between py-2 text-xl font-bold text-white transition hover:text-brand-400">
                   {group.label}
                   <svg
                     aria-hidden="true"
                     viewBox="0 0 20 20"
                     fill="none"
-                    className="size-5 text-navy-500"
+                    className="size-5 text-navy-400 transition-transform group-open:rotate-180"
                   >
                     <path
                       d="m5 7.5 5 5 5-5"
@@ -341,13 +355,13 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
                     />
                   </svg>
                 </summary>
-                <ul className="mt-2 space-y-1">
+                <ul className="mt-3 space-y-2.5 pl-2">
                   {group.items.map((item) => (
                     <li key={`${group.id}-${item.href}`}>
                       <a
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
-                        className="block rounded-lg px-3 py-2.5 text-sm font-medium text-navy-700 transition hover:bg-navy-50"
+                        className="block text-base font-medium text-navy-300 transition hover:text-white"
                       >
                         {item.label}
                       </a>
@@ -370,7 +384,7 @@ export function Header({ forceSolid = false }: { forceSolid?: boolean }) {
                   key={phone}
                   href={`tel:${phone.replace(/[^\d+]/g, "")}`}
                   onClick={() => setMobileOpen(false)}
-                  className="btn-outline w-full"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-navy-700 bg-navy-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-navy-600 hover:bg-navy-800"
                 >
                   {phone}
                 </a>

@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Playfair_Display, Manrope } from "next/font/google";
 import { FloatingActions } from "@/components/layout/FloatingActions";
 import "./globals.css";
 
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-display-google",
+  display: "swap",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
 const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-geist",
+  variable: "--font-sans-google",
   display: "swap",
+  weight: ["300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -24,8 +33,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={manrope.variable}>
-      <body className="font-sans">{children}<FloatingActions /></body>
+    <html lang="en" className={`${playfair.variable} ${manrope.variable}`}>
+      <body className="font-sans">
+        {children}
+        <FloatingActions />
+      </body>
     </html>
   );
 }

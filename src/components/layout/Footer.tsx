@@ -1,4 +1,4 @@
-import { Logo } from "./Logo";
+import Link from "next/link";
 import { footerColumns, site } from "@/data/site";
 
 const socials = [
@@ -26,19 +26,30 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="bg-navy-950 text-navy-100">
-      <div className="shell py-14 lg:py-18">
-        <div className="grid gap-10 lg:grid-cols-[1.4fr_2.6fr]">
+    <footer className="bg-navy-950 text-navy-200">
+      <div className="shell pt-20 pb-8 lg:pt-28 lg:pb-10">
+        {/* Main grid: company name + nav columns */}
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1fr_1.6fr]">
+          {/* Left: Large editorial company name */}
           <div>
-            <div className="[&_span]:!text-white">
-              <Logo />
-            </div>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-navy-300">
-              {site.tagline}. We build RERA-approved apartments, villas, plots and
-              commercial spaces across Visakhapatnam.
+            <p className="eyebrow mb-4 text-brand-400">Since 2012</p>
+            <h2
+              className="font-display font-bold italic text-white"
+              style={{
+                fontFamily: "var(--font-display)",
+                fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Sri Vasishta<br />Constructions
+            </h2>
+            <p className="mt-6 max-w-xs text-sm leading-relaxed text-navy-400">
+              {site.tagline}. RERA-approved properties across Visakhapatnam.
             </p>
 
-            <ul className="mt-6 flex gap-3">
+            {/* Social icons */}
+            <ul className="mt-8 flex gap-3">
               {socials.map((social) => (
                 <li key={social.id}>
                   <a
@@ -46,7 +57,12 @@ export function Footer() {
                     aria-label={social.label}
                     className="grid size-10 place-items-center rounded-lg border border-navy-800 bg-navy-900 text-navy-200 transition hover:border-brand-500 hover:text-brand-400"
                   >
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="size-5">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-5"
+                    >
                       <path d={social.path} />
                     </svg>
                   </a>
@@ -55,37 +71,35 @@ export function Footer() {
             </ul>
           </div>
 
+          {/* Right: nav columns grid */}
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {footerColumns.map((column) => (
-              <div key={column.id}>
-                <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-400">
-                  {column.title}
-                </h3>
-                <ul className="mt-4 space-y-2.5">
-                  {column.links.map((link) => (
+            {footerColumns.map((col) => (
+              <div key={col.id}>
+                <h3 className="eyebrow mb-5 text-brand-400">{col.title}</h3>
+                <ul className="space-y-3">
+                  {col.links.map((link) => (
                     <li key={link.href}>
-                      <a
+                      <Link
                         href={link.href}
-                        className="text-sm text-navy-300 transition hover:text-white"
+                        className="text-sm text-navy-400 transition-colors hover:text-white"
                       >
                         {link.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
 
+            {/* Get in touch */}
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-brand-400">
-                Get in touch
-              </h3>
-              <ul className="mt-4 space-y-3 text-sm text-navy-300">
+              <h3 className="eyebrow mb-5 text-brand-400">Get in touch</h3>
+              <ul className="space-y-3 text-sm text-navy-400">
                 {site.phones.map((phone) => (
                   <li key={phone}>
                     <a
                       href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                      className="transition hover:text-white"
+                      className="transition-colors hover:text-white"
                     >
                       {phone}
                     </a>
@@ -94,7 +108,7 @@ export function Footer() {
                 <li>
                   <a
                     href={`mailto:${site.email}`}
-                    className="break-all transition hover:text-white"
+                    className="break-all transition-colors hover:text-white"
                   >
                     {site.email}
                   </a>
@@ -109,9 +123,16 @@ export function Footer() {
                 <li>
                   <a
                     href={site.whatsapp}
-                    className="inline-flex items-center gap-2 transition hover:text-white"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 transition-colors hover:text-white"
                   >
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="size-4">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-4 shrink-0"
+                    >
                       <path d="M12 4a8 8 0 0 0-6.9 12l-1 3.5 3.6-1A8 8 0 1 0 12 4Zm4.5 11.3c-.2.6-1.2 1.1-1.7 1.1-.5.1-1 .2-3.2-.7-2.7-1.1-4.4-4-4.5-4.1-.1-.2-1.1-1.4-1.1-2.7 0-1.3.7-1.9 1-2.2.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.3.4-.3.3c-.1.1-.3.3-.1.6.2.3.7 1.2 1.6 2 1.1.9 1.9 1.2 2.2 1.4.3.1.4.1.6-.1l.8-1c.2-.2.3-.2.6-.1l2.1 1c.3.2.5.2.6.4.1.1.1.6-.2 1.2Z" />
                     </svg>
                     Chat on WhatsApp
@@ -122,13 +143,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-navy-800 pt-6 text-xs text-navy-400 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
-          </p>
-          <p>
-            RERA No. {site.rera} &middot; Designed and built in Visakhapatnam
-          </p>
+        {/* Bottom bar */}
+        <div className="mt-16 flex flex-col gap-3 border-t border-navy-800 pt-6 text-xs text-navy-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} {site.name}. All rights reserved.</p>
+          <p>RERA No. {site.rera} · Designed and built in Visakhapatnam</p>
         </div>
       </div>
     </footer>
